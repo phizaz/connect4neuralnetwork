@@ -78,6 +78,29 @@ namespace NeuralNet
 			return false;
 		}
 
+		/// Run the network on a set of input values.
+		/// Generates one or more output values.
+		///
+		public List<double> Apply(List<double> inputValues)
+		{
+			Neuron.UnfeedAll(Neurons);
+
+			Debug.Assert(inputValues.Count == Inputs.Count);
+			for (int i = 0; i < Inputs.Count; i++)
+			{
+				Inputs[i].Value = inputValues[i];
+				Inputs[i].Fed = true;
+			}
+			foreach (Neuron neuron in Neurons)
+				FeedForward(neuron);
+
+			List<double> outputValues = new List<double>();
+			for (int i = 0; i < Outputs.Count; i++)
+			{
+				outputValues.Add(Outputs[i].Value);
+			}
+			return outputValues;
+		}
 
 		public void PropogateInput(Example example)
 		{
