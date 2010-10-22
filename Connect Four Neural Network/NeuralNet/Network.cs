@@ -35,13 +35,13 @@ namespace NeuralNet
 			parameters.Assert();
 
 			List<List<Neuron>> levels = new List<List<Neuron>>();
-			levels.Add(Enumerable.Range(0, inputs - 1).Select(i => new Neuron(NeuronType.Input)).ToList());
+			levels.Add(Enumerable.Range(0, inputs).Select(i => new Neuron(NeuronType.Input)).ToList());
 			foreach (int hidden in hiddens)
-				levels.Add(Enumerable.Range(0, hidden - 1).Select(i => new Neuron(NeuronType.Hidden)).ToList());
-			levels.Add(Enumerable.Range(0, outputs - 1).Select(i => new Neuron(NeuronType.Output)).ToList());
+				levels.Add(Enumerable.Range(0, hidden).Select(i => new Neuron(NeuronType.Hidden)).ToList());
+			levels.Add(Enumerable.Range(0, outputs).Select(i => new Neuron(NeuronType.Output)).ToList());
 
 			// Connects to all other neurons.. except input ones (this is used as the additive "constant" value attached to each sigmoid unit.)
-			List<Neuron> connectToAll = Enumerable.Range(0, constants - 1).Select(i => new Neuron(NeuronType.Constant) { Value = 1 }).ToList();
+			List<Neuron> connectToAll = Enumerable.Range(0, constants).Select(i => new Neuron(NeuronType.Constant) { Value = 1 }).ToList();
 
 			for (int i = 0; i + 1 < levels.Count; ++i)
 			{
