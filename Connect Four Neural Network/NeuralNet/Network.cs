@@ -104,16 +104,7 @@ namespace NeuralNet
 
 		public void PropogateInput(Example example)
 		{
-			Neuron.UnfeedAll(Neurons);
-
-			int feature = 0;
-			foreach (Neuron neuron in Inputs)
-			{
-				neuron.Value = example.Features[feature++];
-				neuron.Fed = true;
-			}
-			foreach (Neuron neuron in Neurons)
-				FeedForward(neuron);
+			Apply(example.Features);
 		}
 
 		private void FeedForward(Neuron neuron)
