@@ -19,7 +19,6 @@ namespace ConnectFour
     /// </summary>
     public partial class GameViewer : Window
     {
-        Game Game = new Game();
 
         public GameViewer()
         {
@@ -28,7 +27,8 @@ namespace ConnectFour
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Game.Play();
+            Log log = new Log();
+            log.Show();
         }
     }
 }
