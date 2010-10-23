@@ -8,7 +8,7 @@ namespace NeuralNet
 {
 
 	
-	class Network
+	public class Network
 	{
 		public List<Neuron> Hiddens { get { return Neurons.Where(n => n.Type == NeuronType.Hidden).ToList(); } }
 		public List<Neuron> Inputs { get { return Neurons.Where(n => n.Type == NeuronType.Input).ToList(); } }
@@ -60,6 +60,8 @@ namespace NeuralNet
 
 		public bool TrainNetwork(List<Example> examples, int iterations = 1)
 		{
+            AssertValidForTraining(examples);
+
 			if (Termination.IsNetworkTrained)
 				return true;
 			for (int i = 0; i < iterations; ++i)
@@ -78,48 +80,42 @@ namespace NeuralNet
 			return false;
 		}
 
-		/// Run the network on a set of input values.
-		/// Generates one or more output values.
-		///
-		public List<double> Apply(List<double> inputValues)
-		{
-			Neuron.UnfeedAll(Neurons);
-
-			Debug.Assert(inputValues.Count == Inputs.Count);
-			for (int i = 0; i < Inputs.Count; i++)
-			{
-				Inputs[i].Value = inputValues[i];
-				Inputs[i].Fed = true;
-			}
-			foreach (Neuron neuron in Neurons)
-				FeedForward(neuron);
-
-			List<double> outputValues = new List<double>();
-			for (int i = 0; i < Outputs.Count; i++)
-			{
-				outputValues.Add(Outputs[i].Value);
-			}
-			return outputValues;
-		}
-
+        /// <summary>
+        /// Propogates input through network (FeedForward).  It will update/populate example's predictions list.
+        /// </summary>
 		public void PropogateInput(Example example)
 		{
-			Apply(example.Features);
+            AssertValidFeatures(example);
+
+            Neuron.UnfeedAll(Neurons);
+
+            int feature = 0;
+            foreach (Neuron neuron in Inputs)
+            {
+                neuron.Value = example.Features[feature++];
+                neuron.Fed = true;
+            }
+            foreach (Neuron neuron in Neurons)
+                recur_FeedForward(neuron);
+
+            example.Predictions = Outputs.Select(o => o.Value).ToList();
 		}
 
-		private void FeedForward(Neuron neuron)
+		private void recur_FeedForward(Neuron neuron)
 		{
 			if (neuron.Fed)
 				return;
 
 			foreach (Neuron n in neuron.Upstream)
-				FeedForward(n);
+				recur_FeedForward(n);
 			neuron.UpdateOutputValue(); // Safe to call since all upstream values have been updated.
 			neuron.Fed = true;
 		}
 
 		private void PropogateErrors(Example example)
 		{
+            AssertValidLabels(example);
+
 			Neuron.UnfeedAll(Neurons);
 
 			int label = 0;
@@ -130,16 +126,16 @@ namespace NeuralNet
 			}
 
 			foreach (Neuron neuron in Neurons)
-				PropogateErrors(neuron);
+				recur_PropogateErrors(neuron);
 		}
 
-		private void PropogateErrors(Neuron neuron)
+		private void recur_PropogateErrors(Neuron neuron)
 		{
 			if (neuron.Fed)
 				return;
 
 			foreach (Neuron n in neuron.Downstream)
-				PropogateErrors(n);
+				recur_PropogateErrors(n);
 			neuron.UpdateErrorTerm(); // Safe to call since all downstream errorterms have been updated.
 			neuron.Fed = true;
 		}
@@ -150,11 +146,29 @@ namespace NeuralNet
 				neuron.UpdateDownstreamWeights(Parameters.LearningRate, Parameters.Momentum);
 		}
 
-				
+
+  
+        private void AssertValidFeatures(Example example)
+        {
+            Debug.Assert(example.Features.Count == Inputs.Count, "The number of features must match the number of Input Neurons.\r\n" + "Features: " + example.Features.Count + " Inputs: " + Inputs.Count);
+        }
+        private void AssertValidLabels(Example example)
+        {
+            Debug.Assert(example.Labels.Count == Outputs.Count, "The number of labels must match the number of Output Neurons.\r\n" + "Labels: " + example.Features.Count + " Outputs: " + Inputs.Count);
+        } 
+        private void AssertValidForTraining(Example example)
+        {
+            AssertValidFeatures(example);
+            AssertValidLabels(example);
+        }
+        private void AssertValidForTraining(List<Example> examples)
+        {
+            examples.ForEach(e => AssertValidForTraining(e));
+        }		
 
 	}
 
-	class NetworkParameters
+	public class NetworkParameters
 	{
 		public double LearningRate = .05;
 		public double Momentum = 0;
