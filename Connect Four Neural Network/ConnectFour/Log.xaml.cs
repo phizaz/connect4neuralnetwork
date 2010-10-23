@@ -18,9 +18,11 @@ namespace ConnectFour
     /// </summary>
     public partial class Log : Window
     {
+        Game game;
         public Log()
         {
             InitializeComponent();
+            game = new Game(this);
         }
 
         public void WriteLine(string text)
@@ -28,11 +30,20 @@ namespace ConnectFour
             tbLog.AppendText(text + "\r\n");
             tbLog.ScrollToEnd();
         }
+        public void WriteLine()
+        {
+            tbLog.AppendText("\r\n");
+        }
 
         public void Write(string text)
         {
             tbLog.AppendText(text);
             tbLog.ScrollToEnd();
+        }
+
+        private void btnPlay_Click(object sender, RoutedEventArgs e)
+        {
+            game.Play();
         }
     }
 }

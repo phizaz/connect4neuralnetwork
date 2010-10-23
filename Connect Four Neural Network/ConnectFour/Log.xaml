@@ -1,8 +1,13 @@
 ﻿<Window x:Class="ConnectFour.Log"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Log" Height="300" Width="300">
+        Title="Log" Height="371" Width="363">
     <Grid>
-        <TextBox Height="Auto" HorizontalAlignment="Stretch" Name="tbLog" VerticalAlignment="Stretch" Width="Auto" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="240*" />
+            <RowDefinition Height="21*" />
+        </Grid.RowDefinitions>
+        <TextBox Name="tbLog" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" />
+        <Button Content="Simulate Game" Name="btnPlay" Grid.Row="1" Click="btnPlay_Click" />
     </Grid>
 </Window>

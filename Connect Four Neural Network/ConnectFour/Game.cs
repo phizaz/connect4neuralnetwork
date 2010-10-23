@@ -7,8 +7,14 @@ namespace ConnectFour
 {
     class Game
     {
-        Log Log = new Log();
+        Log Log;
+        int TotalGames = 0, JasonWon = 0, AllenWon = 0, Ties = 0;
 
+        public Game(Log log)
+        {
+            Log = log;
+        }
+            
         public void Play()
         {
             Log.Show();
@@ -35,11 +41,26 @@ namespace ConnectFour
 
             Checker winner;
             if (board.TryGetWinner(out winner))
-                Log.WriteLine("winner is " + (winner == allen.MyColor ? "allen" : "jason"));
+            {
+                if (winner == allen.MyColor)
+                {
+                    Log.WriteLine("winner is allen");
+                    ++AllenWon;
+                }
+                else
+                {
+                    Log.WriteLine("winner is jason");
+                    ++JasonWon;
+                }
+            }
             else
             {
                 Log.WriteLine("tie game");
+                ++Ties;
             }
+            ++TotalGames;
+            Log.WriteLine(string.Format("Allen: {0}({1:f2}) Jason: {2}({3:f2}) Ties {4}({5:f2})   TOTAL: {6}", AllenWon, (double)AllenWon / TotalGames, JasonWon, (double)JasonWon / TotalGames, Ties, (double)Ties / TotalGames, TotalGames));
+            Log.WriteLine();
         }
     }
 }
