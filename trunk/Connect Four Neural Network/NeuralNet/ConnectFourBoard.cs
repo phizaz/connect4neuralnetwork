@@ -64,6 +64,69 @@ namespace NeuralNet
 			return getCell(0, column) != 0;
 		}
 
+		/// y,x- the cell to start checking in
+		/// dy,dx- the direction to look in
+		/// returns the number of matching cells
+		///
+		int checkSequence(int y, int x, int dy, int dx)
+		{
+			int c = getCell(y,x);
+			if (c == 0)
+				return 0;
+
+			for (int num = 1;; num++)
+			{
+				y += dy;
+				x += dx;
+				if (y < 0 || y >= NUM_ROWS)
+					return num;
+				if (x < 0 || x >= NUM_COLUMNS)
+					return num;
+				if (getCell(y,x) != c)
+					return num;
+			}
+		}
+
+		/// Check if there is a winner, if so, return the "color"
+		/// of the winner.
+		///
+		public int getWinner()
+		{
+			for (int y = 0; y < NUM_ROWS; y++)
+			{
+				for (int x = 0; x < NUM_COLUMNS; x++)
+				{
+					// check for Four-in-a-row in
+					// various directions
+
+					if (checkSequence(y,x,-1,1) >= 4)
+						return getCell(y,x);
+					if (checkSequence(y,x,0,1) >= 4)
+						return getCell(y,x);
+					if (checkSequence(y,x,1,1) >= 4)
+						return getCell(y,x);
+					if (checkSequence(y,x,1,0) >= 4)
+						return getCell(y,x);
+				}
+			}
+			// if reached here, then no winner
+			return 0;
+		}
+
+		public bool isGameOver()
+		{
+			if (getWinner() != 0)
+				return true;
+
+			for (int x = 0; x < NUM_COLUMNS; x++)
+			{
+				if (!isColumnFull(x))
+					return false;
+			}
+			// if reached here, then all columns are full
+			return true;
+		}
+
 		void setCell(int row, int column, int color)
 		{
 			cells[row * NUM_COLUMNS + column] = color;
