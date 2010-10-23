@@ -7,7 +7,7 @@ namespace NeuralNet
 {
 	public enum NeuronType { Input, Hidden, Output, Constant }
 
-	class Neuron
+	public class Neuron
 	{
 		public NeuronType Type;
 		public double Value;

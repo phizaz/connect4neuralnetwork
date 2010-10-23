@@ -11,7 +11,7 @@ namespace NeuralNet
 	/// <summary>
 	/// Encapsulates a set of termination criteria to complete networking propogation.
 	/// </summary>
-	class Termination
+	public class Termination
 	{
 		TerminationType Type;
 		
