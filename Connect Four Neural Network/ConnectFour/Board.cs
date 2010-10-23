@@ -11,12 +11,11 @@ namespace ConnectFour
     /// </summary>
 	public class Board
 	{
-        public static const int DEFAULT_ROWS = 6, DEFAULT_COLUMNS = 7;
         public int Rows { get { return Cells.GetLength(0); } }
         public int Columns { get { return Cells.GetLength(1); } }
         public Checker[,] Cells;
 
-        public Board(int rows=DEFAULT_ROWS, int columns=DEFAULT_COLUMNS)
+        public Board(int rows=6, int columns=7)
         {
             Cells = new Checker[rows,columns];
         }

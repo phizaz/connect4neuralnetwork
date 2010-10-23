@@ -15,13 +15,13 @@ using System.Windows.Shapes;
 namespace ConnectFour
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for GameViewer.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class GameViewer : Window
     {
         Game Game = new Game();
 
-        public MainWindow()
+        public GameViewer()
         {
             InitializeComponent();
         }
