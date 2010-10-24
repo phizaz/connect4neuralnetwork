@@ -55,10 +55,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Game.cs" />
+    <Compile Include="Data\DataParser.cs" />
+    <Compile Include="Simulator.cs" />
     <Compile Include="Log.xaml.cs">
       <DependentUpon>Log.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Trainer.cs" />
+    <Compile Include="TrainingRegimen.cs" />
+    <Compile Include="Transform.cs" />
     <Page Include="Log.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -107,6 +111,13 @@
       <Project>{331699E3-36C5-40B2-B641-A8882D528B10}</Project>
       <Name>NeuralNet</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Serializer\Serializer.csproj">
+      <Project>{36E1491F-58C6-4BFE-ADE9-BAEA5BE8D9CA}</Project>
+      <Name>Serializer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Data\connect-4.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

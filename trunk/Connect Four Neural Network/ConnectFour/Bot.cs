@@ -14,24 +14,23 @@ namespace ConnectFour
 		Network Network;
 		public Checker MyColor;
 
-		public Bot(Checker myColor)
+		public Bot(Checker myColor, Network network)
 		{
+            Debug.Assert(myColor != Checker.Empty);
 			MyColor = myColor;
+            Network = network;
 		}
 
 		double EvaluateBoard(Board board)
 		{
-            if (Network == null)
-                Network = new Network(board.Rows * board.Columns, 100, 1, null);
-            else
-                Debug.Assert(Network.Inputs.Count == board.Rows * board.Columns);
+            Debug.Assert(Network.Inputs.Count == board.Rows * board.Columns);
 
-            Example example = new Example(board.Cells.Cast<Checker>().Select(checker => (checker == Checker.Empty ? 0.0 : checker == MyColor ? 1.0 : -1.0)).ToList());
+            Example example = Transform.ToNormalizedExample(board, MyColor);
             Network.PropogateInput(example);
 			return example.Predictions[0];
 		}
 
-		public int SelectMove(Board board)
+		public void SelectMove(Board board, out int column, out double score)
 		{
 			int bestX = 0;
 			double bestV = Double.NegativeInfinity;
@@ -49,7 +48,8 @@ namespace ConnectFour
 					}
 				}
 			}
-			return bestX;
+			column = bestX;
+            score = bestV;
 		}
 	}
 }

@@ -8,6 +8,6 @@
             <RowDefinition Height="21*" />
         </Grid.RowDefinitions>
         <TextBox Name="tbLog" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" />
-        <Button Content="Simulate Game" Name="btnPlay" Grid.Row="1" Click="btnPlay_Click" />
+        <Button Content="Simulate Game" Name="btnPlay" Grid.Row="1"  />
     </Grid>
 </Window>
