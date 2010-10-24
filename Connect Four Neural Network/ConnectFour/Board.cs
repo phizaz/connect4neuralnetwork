@@ -3,8 +3,8 @@ using System.Diagnostics;
 
 namespace ConnectFour
 {
-
-    public enum Checker { Empty=0, Blue=1, Green=2 }
+    public enum Checker { Empty, Blue, Green }
+    public enum GameResult { Draw, Win, Loss }
 
     /// <summary>
     /// Represents the current state of the game of ConnectFour
@@ -14,6 +14,7 @@ namespace ConnectFour
         public int Rows { get { return Cells.GetLength(0); } }
         public int Columns { get { return Cells.GetLength(1); } }
         public Checker[,] Cells;
+        public Checker NextInTurn;
 
         public Board(int rows=6, int columns=7)
         {

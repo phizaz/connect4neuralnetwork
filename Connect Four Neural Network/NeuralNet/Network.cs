@@ -17,17 +17,10 @@ namespace NeuralNet
 		public List<Neuron> Neurons = new List<Neuron>();
 		public NetworkParameters Parameters = new NetworkParameters();
 		public Termination Termination;
+        public bool IsTrained { get { return Termination.IsNetworkTrained; } }
 
-		private Network() { }
-
-		/// Create a new (randomized) 3-layer neural network.
-		///  inputs: the number of input nodes
-		///  hiddens: the number of hidden nodes (middle layer)
-		///  outputs: the number of output nodes
-		///  termination:
-		///  parameters: may be null
+		private Network() { }  
 		public Network(int inputs, int hiddens, int outputs, Termination termination, NetworkParameters parameters = null) : this (inputs, new List<int>(){hiddens}, outputs, termination, parameters) {}
-
 		public Network(int inputs, List<int> hiddens, int outputs, Termination termination, NetworkParameters parameters = null, int constants = 1)
 		{
 			if (parameters == null)

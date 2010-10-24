@@ -27,8 +27,8 @@ namespace ConnectFour
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Log log = new Log();
-            log.Show();
+            Simulator simulator = new Simulator();
+            simulator.Play(logProgress: true);
         }
     }
 }
