@@ -51,7 +51,9 @@ namespace ConnectFour
                 int column;
                 double score;
                 current.SelectMove(board, out column, out score);
-                Log((current == allen ? "Allen" : "Jason") + " picks column " + column);
+                Log((current == allen ? "Allen" : "Jason")
+			+ " picks column " + column
+			+ " (score " + score + ")");
                 board.AddChecker(current.MyColor, column);
 
                 Example example = Transform.ToNormalizedExample(board, current.MyColor);
