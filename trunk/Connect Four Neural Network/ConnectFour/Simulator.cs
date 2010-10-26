@@ -57,6 +57,13 @@ namespace ConnectFour
                 board.AddChecker(current.MyColor, column);
 
                 Example example = Transform.ToNormalizedExample(board, current.MyColor);
+		if (board.IsGameOver)
+		{
+            		if (board.TryGetWinner(out winner))
+				score = winner == current ? 1 : 0;
+			else
+				score = .5;
+		}
                 example.Predictions.Add(score);
                 trace.Add(example);
                 
