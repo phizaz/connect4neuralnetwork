@@ -59,13 +59,15 @@ namespace ConnectFour
                 Example example = Transform.ToNormalizedExample(board, current.MyColor);
 		if (board.IsGameOver)
 		{
-            		if (board.TryGetWinner(out winner))
-				score = winner == current ? 1 : 0;
+			Checker winner1;
+            		if (board.TryGetWinner(out winner1))
+				score = winner1 == current.MyColor ? 1 : 0;
 			else
 				score = .5;
 		}
-                example.Predictions.Add(score);
+                example.Labels.Add(score);
                 trace.Add(example);
+                Log(ExampleToString(example));
                 
                 current = (current == allen ? jason : allen);
                 ++Turns;
@@ -106,5 +108,21 @@ namespace ConnectFour
                 Logger.WriteLine(message);
         }
 
+	static String ExampleToString(Example example)
+	{
+		String buf = "";
+		for (int x = 0; x < 7; x++)
+		{
+			buf += "[";
+			for (int y = 0; y < 6; y++)
+			{
+				double d = example.Features[y * 7 + x];
+				buf += d > 0 ? "X" : d < 0 ? "O" : "-";
+			}
+			buf += "]";
+		}
+		buf += " : " + example.Labels[0];
+		return buf;
+	}
     }
 }
