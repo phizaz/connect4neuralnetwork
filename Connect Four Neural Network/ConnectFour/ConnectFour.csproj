@@ -35,9 +35,14 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -107,6 +112,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GlassExtension\GlassExtension.csproj">
+      <Project>{A65D1618-73DA-4536-9086-B0F6FF81CE05}</Project>
+      <Name>GlassExtension</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NeuralNet\NeuralNet.csproj">
       <Project>{331699E3-36C5-40B2-B641-A8882D528B10}</Project>
       <Name>NeuralNet</Name>
@@ -118,6 +127,45 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Data\connect-4.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\orbz_water.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\orbz_spirit.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\orbz_lightning.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\orbz_ice.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\gnome-network-preferences.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\blender.png" />
+    <Resource Include="Icons\LimeWire.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\briquolo.png" />
+    <Resource Include="Icons\Firefox Alternate 1.png" />
+    <Resource Include="Icons\Google Earth.png" />
+    <Resource Include="Icons\orb.png" />
+    <Resource Include="Icons\orbz_air.ico" />
+    <Resource Include="Icons\orbz_earth.ico" />
+    <Resource Include="Icons\Thunderbird Alternate 1.png" />
+    <Resource Include="Icons\Thunderbird Alternate 2.png" />
+    <Resource Include="Icons\tmw.png" />
+    <Resource Include="Icons\web-browser.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\neverball_blue.png" />
+    <Resource Include="Icons\neverball_green.png" />
+    <Resource Include="Icons\neverball_purple.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\violet_light.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

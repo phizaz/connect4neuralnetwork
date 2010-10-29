@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConnectFour", "ConnectFour\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serializer", "Serializer\Serializer.csproj", "{36E1491F-58C6-4BFE-ADE9-BAEA5BE8D9CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlassExtension", "GlassExtension\GlassExtension.csproj", "{A65D1618-73DA-4536-9086-B0F6FF81CE05}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -51,6 +53,16 @@ Global
 		{36E1491F-58C6-4BFE-ADE9-BAEA5BE8D9CA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{36E1491F-58C6-4BFE-ADE9-BAEA5BE8D9CA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{36E1491F-58C6-4BFE-ADE9-BAEA5BE8D9CA}.Release|x86.ActiveCfg = Release|Any CPU
+		{A65D1618-73DA-4536-9086-B0F6FF81CE05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A65D1618-73DA-4536-9086-B0F6FF81CE05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A65D1618-73DA-4536-9086-B0F6FF81CE05}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A65D1618-73DA-4536-9086-B0F6FF81CE05}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A65D1618-73DA-4536-9086-B0F6FF81CE05}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A65D1618-73DA-4536-9086-B0F6FF81CE05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A65D1618-73DA-4536-9086-B0F6FF81CE05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A65D1618-73DA-4536-9086-B0F6FF81CE05}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A65D1618-73DA-4536-9086-B0F6FF81CE05}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A65D1618-73DA-4536-9086-B0F6FF81CE05}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

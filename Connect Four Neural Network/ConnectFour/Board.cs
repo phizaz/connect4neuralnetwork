@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace ConnectFour
 {
@@ -11,6 +12,7 @@ namespace ConnectFour
     /// </summary>
 	public class Board
 	{
+        public List<int> MoveHistory = new List<int>();
         public int Rows { get { return Cells.GetLength(0); } }
         public int Columns { get { return Cells.GetLength(1); } }
         public Checker[,] Cells;
@@ -19,6 +21,9 @@ namespace ConnectFour
         public Board(int rows=6, int columns=7)
         {
             Cells = new Checker[rows,columns];
+            for (int i = 0; i < rows; ++i)
+                for (int j = 0; j < columns; ++j)
+                    Cells[i, j] = Checker.Empty;
         }
 
         public Checker this[int row, int col]
@@ -38,15 +43,15 @@ namespace ConnectFour
 			}
 			else
 			{
-				for (int row = 1; row < Rows; row++)
+				for (int row = Rows-1; row >= 0; --row)
 				{
-					if (Cells[row,column] != Checker.Empty)
+					if (Cells[row,column] == Checker.Empty)
 					{
-						Cells[row-1, column] = checker;
+						Cells[row, column] = checker;
+                        MoveHistory.Add(column);
 						return;
 					}
 				}
-				Cells[Rows-1, column] = checker;
 			}
 		}
 
@@ -59,6 +64,10 @@ namespace ConnectFour
 				if (checker != Checker.Empty)
 				{
                     Cells[row, column] = Checker.Empty;
+                    int lastindex = MoveHistory.FindLastIndex(e => e == column);
+                    if (lastindex != -1)
+                    MoveHistory.RemoveAt(lastindex);
+                    
 					return checker;
 				}
 			}

@@ -10,35 +10,56 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using GlassExtension;
 
 namespace ConnectFour
 {
+    public enum LogSetting { Hidden, Ignore, Normal }
+
     /// <summary>
     /// Interaction logic for Log.xaml
     /// </summary>
     public partial class Log : Window
     {
+        public LogSetting Setting = LogSetting.Normal;
 
-        public Log()
+        public Log(LogSetting setting = LogSetting.Normal)
         {
             InitializeComponent();
+            Setting = setting;
+            this.Loaded += new RoutedEventHandler(Log_Loaded);
+        }
+
+        void Log_Loaded(object sender, RoutedEventArgs e)
+        {
+            Glass.ExtendGlassFrame(this);
         }
 
         public void WriteLine(string text)
         {
-            tbLog.AppendText(text + "\r\n");
-            tbLog.ScrollToEnd();
+            Write(text + "\r\n");
         }
         public void WriteLine()
         {
-            tbLog.AppendText("\r\n");
+            Write("\r\n");
         }
 
         public void Write(string text)
         {
+            if (Setting == LogSetting.Ignore)
+                return;
+            if (Setting != LogSetting.Hidden)
+                this.Show();
             tbLog.AppendText(text);
             tbLog.ScrollToEnd();
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            this.Hide();
+            e.Cancel = true;
+        }
+
 
 
     }
