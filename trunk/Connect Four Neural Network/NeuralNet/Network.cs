@@ -51,6 +51,13 @@ namespace NeuralNet
 			Neurons.AddRange(connectToAll);
 		}
 
+		public void LearnOneExample(Example example)
+		{
+			PropogateInput(example);
+			PropogateErrors(example);
+			UpdateWeights();
+		}
+
 		public bool TrainNetwork(List<Example> examples, int iterations = 1)
 		{
             AssertValidForTraining(examples);
@@ -61,10 +68,7 @@ namespace NeuralNet
 			{
 				foreach (Example example in examples)
 				{
-					PropogateInput(example);
-					PropogateErrors(example);
-					UpdateWeights();
-
+					LearnOneExample(example);
 					if (Termination.IsNetworkTrained)
 						return true;
 				}
