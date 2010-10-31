@@ -7,6 +7,7 @@ namespace NeuralNet
 {
 	public enum NeuronType { Input, Hidden, Output, Constant }
 
+	[Serializable]
 	public class Neuron
 	{
 		public NeuronType Type;
