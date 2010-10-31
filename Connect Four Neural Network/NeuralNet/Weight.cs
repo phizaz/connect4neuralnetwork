@@ -6,6 +6,7 @@ using System.Text;
 namespace NeuralNet
 {
 	// Need to encapsulate within a class because we need to get a pointer, hence updates to upstream weights reflect in downstream weights
+	[Serializable]
 	public class Weight
 	{
 		public double Value;

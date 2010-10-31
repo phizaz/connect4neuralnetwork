@@ -7,7 +7,7 @@ using System.Diagnostics;
 namespace NeuralNet
 {
 
-	
+	[Serializable]
 	public class Network
 	{
 		public List<Neuron> Hiddens { get { return Neurons.Where(n => n.Type == NeuronType.Hidden).ToList(); } }
@@ -161,6 +161,7 @@ namespace NeuralNet
 
 	}
 
+	[Serializable]
 	public class NetworkParameters
 	{
 		public double LearningRate = .05;
