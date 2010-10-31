@@ -23,7 +23,7 @@ namespace MySerializer
             if (!File.Exists(filename))
                 throw new FileNotFoundException();
             IFormatter formatter = new BinaryFormatter();
-            Stream stream = new FileStream("MyFile.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
+            Stream stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
             object o = formatter.Deserialize(stream);
             stream.Close();
             return o;
