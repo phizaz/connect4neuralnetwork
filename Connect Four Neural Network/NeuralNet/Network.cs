@@ -40,11 +40,11 @@ namespace NeuralNet
 			{
 				foreach (Neuron n in levels[i])
 					foreach (Neuron m in levels[i + 1])
-					{
 						n.Attach(m, new Weight(parameters.InitialWeightInterval));
-						foreach (Neuron c in connectToAll)
-							c.Attach(m, new Weight(parameters.InitialWeightInterval));
-					}
+
+				foreach (Neuron c in connectToAll)
+					foreach (Neuron m in levels[i + 1])
+						c.Attach(m, new Weight(parameters.InitialWeightInterval));
 			}
 
 			Neurons = levels.Aggregate<List<Neuron>>((aggregated, level) => { aggregated.AddRange(level); return aggregated; }).ToList();
