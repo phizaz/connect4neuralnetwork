@@ -6,6 +6,7 @@ using System.Diagnostics;
 
 namespace NeuralNet
 {
+    [Serializable]
     public class Example
     {
         public List<double> Features = new List<double>();

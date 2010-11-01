@@ -82,7 +82,7 @@ namespace ConnectFour
                 CurrentBoard.AddChecker(Checker, column);
                 Bot.SelectMove(CurrentBoard, out column2, out score);
                 CurrentBoard.AddChecker(ToggleChecker(Checker), column2);
-                BatchAddCheckers(Checker, new List<int> { column, column2 }, TimeSpan.FromMilliseconds(500), false);
+                BatchAddCheckers(Checker, new List<int> { column, column2 }, TimeSpan.FromMilliseconds(50), false);
             }
             else
             {
