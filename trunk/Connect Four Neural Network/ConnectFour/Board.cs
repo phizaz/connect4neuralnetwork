@@ -16,7 +16,6 @@ namespace ConnectFour
         public int Rows { get { return Cells.GetLength(0); } }
         public int Columns { get { return Cells.GetLength(1); } }
         public Checker[,] Cells;
-        public Checker NextInTurn;
 
         public Board(int rows=6, int columns=7)
         {
