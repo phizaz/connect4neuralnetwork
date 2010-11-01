@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
 namespace NeuralNet
 {
@@ -50,17 +51,20 @@ namespace NeuralNet
 		/// <summary>
 		/// Calculates error term.  Used by backward propogation.
 		/// </summary>
-		public void UpdateErrorTerm(double label = 0)
+		public void UpdateErrorTerm(double label = double.NaN)
 		{
-			if (Type == NeuronType.Output)
-				ErrorTerm = Value * (1 - Value) * (label - Value);
-			else if (Type == NeuronType.Hidden)
-			{
-				double sum = 0;
-				for (int i = 0; i < Downstream.Count; ++i)
-					sum += Downstream[i].ErrorTerm * DownstreamWeights[i].Value;
-				ErrorTerm = Value * (1 - Value) * sum;
-			}
+            if (Type == NeuronType.Output)
+            {
+                Debug.Assert(label != double.NaN, "Label parameter must be provided on output neurons");
+                ErrorTerm = Value * (1 - Value) * (label - Value);
+            }
+            else if (Type == NeuronType.Hidden)
+            {
+                double sum = 0;
+                for (int i = 0; i < Downstream.Count; ++i)
+                    sum += Downstream[i].ErrorTerm * DownstreamWeights[i].Value;
+                ErrorTerm = Value * (1 - Value) * sum;
+            }
 		}
 
 		/// <summary>

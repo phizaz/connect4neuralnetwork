@@ -51,6 +51,12 @@ namespace NeuralNet
 			Neurons.AddRange(connectToAll);
 		}
 
+        /// <summary>
+        /// Trains a network using a given set of examples.
+        /// </summary>
+        /// <param name="examples">Set of examples.  Make sure features and labels lists are populated before training.</param>
+        /// <param name="iterations">Number of iterations to train on the given set of examples</param>
+        /// <returns>True if network is fully trained.  False otherwise.  (Based on Termination object given in constructor)</returns>
 		public void LearnOneExample(Example example)
 		{
 			PropogateInput(example);
@@ -78,7 +84,7 @@ namespace NeuralNet
 		}
 
         /// <summary>
-        /// Propogates input through network (FeedForward).  It will update/populate example's predictions list.
+        /// Propogates input through network (FeedForward).  Updates example.predictions.
         /// </summary>
 		public void PropogateInput(Example example)
 		{
@@ -123,16 +129,16 @@ namespace NeuralNet
 			}
 
 			foreach (Neuron neuron in Neurons)
-				recur_PropogateErrors(neuron);
+				recur_BackPropogation(neuron);
 		}
 
-		private void recur_PropogateErrors(Neuron neuron)
+		private void recur_BackPropogation(Neuron neuron)
 		{
 			if (neuron.Fed)
 				return;
 
 			foreach (Neuron n in neuron.Downstream)
-				recur_PropogateErrors(n);
+				recur_BackPropogation(n);
 			neuron.UpdateErrorTerm(); // Safe to call since all downstream errorterms have been updated.
 			neuron.Fed = true;
 		}
@@ -147,11 +153,13 @@ namespace NeuralNet
   
         private void AssertValidFeatures(Example example)
         {
-            Debug.Assert(example.Features.Count == Inputs.Count, "The number of features must match the number of Input Neurons.\r\n" + "Features: " + example.Features.Count + " Inputs: " + Inputs.Count);
+            if (example.Features.Count != Inputs.Count)
+                throw new Exception("The number of features must match the number of Input Neurons.\r\n" + "Features: " + example.Features.Count + " Inputs: " + Inputs.Count);
         }
         private void AssertValidLabels(Example example)
         {
-            Debug.Assert(example.Labels.Count == Outputs.Count, "The number of labels must match the number of Output Neurons.\r\n" + "Labels: " + example.Features.Count + " Outputs: " + Inputs.Count);
+            if (example.Labels.Count != Outputs.Count)
+                throw new Exception("The number of labels must match the number of Output Neurons.\r\n" + "Labels: " + example.Features.Count + " Outputs: " + Inputs.Count);
         } 
         private void AssertValidForTraining(Example example)
         {

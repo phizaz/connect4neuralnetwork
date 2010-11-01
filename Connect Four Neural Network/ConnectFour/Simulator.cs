@@ -10,7 +10,11 @@ namespace ConnectFour
     {
         int TotalGames, JasonWon, AllenWon, Ties, Turns, TotalTurns;
         GameViewer Viewer { get; set; }
-        Log Log = new Log();
+        
+        public Simulator(GameViewer viewer = null)
+        {
+            Viewer = viewer;
+        }
 
 
         /// <summary>
@@ -19,16 +23,12 @@ namespace ConnectFour
         /// <param name="board">Starting board that the bots will play on.  This need not be empty!</param>
         /// <param name="network">Neural network that provides the AI for gameplay.</param>
         /// <returns>Trace of game sequence, each board state stored as a Neural Net Example</returns>
-        public List<Example> Play(Board board = null, Network network = null, LogSetting setting = LogSetting.Ignore, GameViewer viewer = null)
+        public List<Example> Play(Board board = null, Network network = null)
         {
             if (board == null)
                 board = new Board();
             if (network == null)
                 network = new Network(board.Rows * board.Columns, 100, 1, null);
-            Viewer = viewer;
-            if (Viewer != null)
-                Log = Viewer.Log;
-            Log.Setting = setting;
 
             Bot allen = new Bot(Checker.Blue, network); // <-- you know he will win :)
             Bot jason = new Bot(Checker.Green, network);
@@ -42,18 +42,10 @@ namespace ConnectFour
                 int column;
                 double score;
                 current.SelectMove(board, out column, out score);
-                Log.WriteLine(String.Format("{0} picks column {1}   (Score: {2:f2})", (current == allen ? "Allen" : "Jason"), column, score));
+                Log(String.Format("{0} picks column {1}   (Score: {2:f2})", (current == allen ? "Allen" : "Jason"), column, score));
                 board.AddChecker(current.MyColor, column);
 
                 Example example = Transform.ToNormalizedExample(board, current.MyColor);
-                if (board.IsGameOver)
-                {
-                    Checker winner1;
-                    if (board.TryGetWinner(out winner1))
-                        score = winner1 == current.MyColor ? 1 : 0;
-                    else
-                        score = .5;
-                }
                 example.Predictions.Add(score);
                 trace.Add(example);
 
@@ -62,36 +54,53 @@ namespace ConnectFour
             }
 
             if (Viewer != null)
-                Viewer.BatchAddCheckers(board.MoveHistory, TimeSpan.FromMilliseconds(10));
+                Viewer.BatchAddCheckers(allen.MyColor, board.MoveHistory, TimeSpan.FromMilliseconds(300));
 
             TotalTurns += Turns;
 
             Checker winner;
             if (board.TryGetWinner(out winner))
             {
+                trace[trace.Count - 1].Predictions[0] = Transform.ToValue(GameResult.Win);
+                trace[trace.Count - 2].Predictions[0] = Transform.ToValue(GameResult.Loss);
                 if (winner == allen.MyColor)
                 {
-                    Log.WriteLine("WINNER:  Allen");
+                    Log("WINNER:  Allen");
                     ++AllenWon;
                 }
                 else
                 {
-                    Log.WriteLine("WINNER:  Jason");
+                    Log("WINNER:  Jason");
                     ++JasonWon;
                 }
             }
             else
             {
-                Log.WriteLine("TIE");
+                trace[trace.Count - 1].Predictions[0] = trace[trace.Count - 2].Predictions[0] = Transform.ToValue(GameResult.Draw);
+                Log("TIE");
                 ++Ties;
             }
 
             ++TotalGames;
-            Log.WriteLine(string.Format("Turns: {0} ({1:f2})", Turns, (double)TotalTurns / TotalGames));
-            Log.WriteLine(string.Format("Allen: {0}({1:f2}) Jason: {2}({3:f2}) Ties {4}({5:f2})   TOTAL: {6}", AllenWon, (double)AllenWon / TotalGames, JasonWon, (double)JasonWon / TotalGames, Ties, (double)Ties / TotalGames, TotalGames));
-            Log.WriteLine();
+            Log(string.Format("Turns: {0} ({1:f2})", Turns, (double)TotalTurns / TotalGames));
+            Log(string.Format("Allen: {0}({1:f2}) Jason: {2}({3:f2}) Ties {4}({5:f2})   TOTAL: {6}", AllenWon, (double)AllenWon / TotalGames, JasonWon, (double)JasonWon / TotalGames, Ties, (double)Ties / TotalGames, TotalGames));
+            Log("");
+
+            // Critic: Takes as input the history/trace and estimates label based on successor board state (Successor meaning next time current player goes -- every two moves!).  Assume all features and predictions values are populated already.
+            for (int i = 0; i < trace.Count - 2; ++i)
+            {
+                trace[i].Labels = trace[i + 2].Predictions; 
+            }
+            trace[trace.Count - 2].Labels = trace[trace.Count - 2].Predictions;
+            trace[trace.Count - 1].Labels = trace[trace.Count - 1].Predictions;
 
             return trace;
+        }
+
+        void Log(string msg)
+        {
+            if (Viewer != null)
+                Viewer.Log.WriteLine(msg);
         }
     }
 }

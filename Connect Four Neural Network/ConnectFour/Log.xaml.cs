@@ -14,19 +14,14 @@ using GlassExtension;
 
 namespace ConnectFour
 {
-    public enum LogSetting { Hidden, Ignore, Normal }
-
     /// <summary>
     /// Interaction logic for Log.xaml
     /// </summary>
     public partial class Log : Window
     {
-        public LogSetting Setting = LogSetting.Normal;
-
-        public Log(LogSetting setting = LogSetting.Normal)
+        public Log()
         {
             InitializeComponent();
-            Setting = setting;
             this.Loaded += new RoutedEventHandler(Log_Loaded);
         }
 
@@ -46,10 +41,6 @@ namespace ConnectFour
 
         public void Write(string text)
         {
-            if (Setting == LogSetting.Ignore)
-                return;
-            if (Setting != LogSetting.Hidden)
-                this.Show();
             tbLog.AppendText(text);
             tbLog.ScrollToEnd();
         }

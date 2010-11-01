@@ -81,5 +81,8 @@
         <Border Style="{StaticResource BorderHighlight}" Padding="0,3,0,0" MouseUp="ToggleLog_MouseUp"  Height="28" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom">
             <Image Source="/ConnectFour;component/Icons/violet_light.ico" ToolTip="Toggle Log" />
         </Border>
+        <Border Style="{StaticResource BorderHighlight}" Padding="0,3,0,0" MouseUp="ToggleSettings_MouseUp"  Height="28" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+            <Image Source="/ConnectFour;component/Icons/blue_light.png" ToolTip="Toggle Settings" />
+        </Border>
     </Grid>
 </Window>
