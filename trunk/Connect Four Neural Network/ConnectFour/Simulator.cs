@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NeuralNet;
+using ConnectFour.Properties;
 
 namespace ConnectFour
 {
@@ -17,6 +18,19 @@ namespace ConnectFour
         }
 
 
+
+        Checker NextPlayer(Board board)
+        {
+            int numBlue=0, numGreen=0;
+            for (int i = 0; i < board.Rows; ++i)
+                for (int j = 0; j < board.Columns; ++j)
+                    if (board[i, j] == Checker.Blue)
+                        ++numBlue;
+                    else if (board[i, j] == Checker.Green)
+                        ++numGreen;
+            return (numBlue > numGreen ? Checker.Green : Checker.Blue);
+        }
+
         /// <summary>
         /// Simulate a game until completion.
         /// </summary>
@@ -28,7 +42,7 @@ namespace ConnectFour
             if (board == null)
                 board = new Board();
             if (network == null)
-                network = new Network(board.Rows * board.Columns, 100, 1, null);
+                network = new Network("default", board.Rows * board.Columns, 100, 1, null);
 
             Bot allen = new Bot(Checker.Blue, network); // <-- you know he will win :)
             Bot jason = new Bot(Checker.Green, network);
@@ -36,7 +50,7 @@ namespace ConnectFour
             List<Example> trace = new List<Example>();
 
             Turns = 0;
-            Bot current = allen;
+            Bot current = allen.MyColor == NextPlayer(board) ? allen : jason;
             while (!board.IsGameOver)
             {
                 int column;
@@ -54,7 +68,7 @@ namespace ConnectFour
             }
 
             if (Viewer != null)
-                Viewer.BatchAddCheckers(allen.MyColor, board.MoveHistory, TimeSpan.FromMilliseconds(50));
+                Viewer.BatchAddCheckers(allen.MyColor, board.MoveHistory, TimeSpan.FromMilliseconds(Settings.Default.MoveDelay));
 
             TotalTurns += Turns;
 
