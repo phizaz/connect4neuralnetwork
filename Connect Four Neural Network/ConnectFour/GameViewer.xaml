@@ -1,7 +1,7 @@
 ﻿<Window x:Class="ConnectFour.GameViewer"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Connect Four" Height="350" Width="525"  Loaded="Window_Loaded" Icon="/ConnectFour;component/Icons/orbz_water.ico" Background="White">
+        Title="Connect Four" Height="350" Width="525"  Icon="/ConnectFour;component/Icons/orbz_water.ico" Background="White"  Closing="Window_Closing" Loaded="Window_Loaded">
     <Window.Resources>
         <SolidColorBrush x:Key="HoverColor" Color="#08000000"></SolidColorBrush>
         <Thickness x:Key="BorderThickness1">0,0,0,0</Thickness>
@@ -76,10 +76,11 @@
             </Border>
             <Border Style="{StaticResource BorderHighlight}" Width="75" Padding="0,3,0,0" MouseUp="ComputerVComputer_MouseUp">
                 <Image Source="/ConnectFour;component/Icons/neverball_purple.png" Width="50" ToolTip="Computer v Computer" />
+             
             </Border>
         </StackPanel>
         <Border Style="{StaticResource BorderHighlight}" Padding="0,3,0,0" MouseUp="ToggleLog_MouseUp"  Height="28" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-            <Image Source="/ConnectFour;component/Icons/violet_light.ico" ToolTip="Toggle Log" />
+            <Image Source="/ConnectFour;component/Icons/violet_light.png" ToolTip="Toggle Log" />
         </Border>
         <Border Style="{StaticResource BorderHighlight}" Padding="0,3,0,0" MouseUp="ToggleSettings_MouseUp"  Height="28" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom">
             <Image Source="/ConnectFour;component/Icons/blue_light.png" ToolTip="Toggle Settings" />

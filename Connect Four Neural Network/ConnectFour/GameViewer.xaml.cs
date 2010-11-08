@@ -18,10 +18,11 @@ using System.Windows.Media.Animation;
 using System.Threading;
 using System.Threading.Tasks;
 using GlassExtension;
+using System.ComponentModel;
 
 using NeuralNet;
+using ConnectFour.Properties;
 
-using System.ComponentModel;
 
 namespace ConnectFour
 {
@@ -37,6 +38,7 @@ namespace ConnectFour
         public Bot Bot;
 
         public Log Log = new Log();
+        public Menu Menu = new Menu();
 
         public GameViewer()
         {
@@ -48,7 +50,6 @@ namespace ConnectFour
         {
             Glass.ExtendGlassFrame(this);
         }
-
 
         private void HumanVHuman_MouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -82,7 +83,7 @@ namespace ConnectFour
                 CurrentBoard.AddChecker(Checker, column);
                 Bot.SelectMove(CurrentBoard, out column2, out score);
                 CurrentBoard.AddChecker(ToggleChecker(Checker), column2);
-                BatchAddCheckers(Checker, new List<int> { column, column2 }, TimeSpan.FromMilliseconds(50), false);
+                BatchAddCheckers(Checker, new List<int> { column, column2 }, TimeSpan.FromMilliseconds(Settings.Default.MoveDelay), false);
             }
             else
             {
@@ -97,7 +98,7 @@ namespace ConnectFour
             Mode = mode;
             Checker = Checker.Blue;
             CurrentBoard = new Board();
-            Bot = new Bot(Checker.Green, new Network(CurrentBoard.Rows * CurrentBoard.Columns, 100, 1, null));
+            Bot = new Bot(Checker.Green, new Network("Default", CurrentBoard.Rows * CurrentBoard.Columns, 100, 1, null));
         }
 
         public Checker ToggleChecker(Checker checker)
@@ -135,7 +136,7 @@ namespace ConnectFour
                     CurrentBoard.AddChecker(checker, column);
 
                 DoubleAnimation fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(0));
-                ThicknessAnimation animation = new ThicknessAnimation(new Thickness(0, -300, 0, 0), new Thickness(0, 0, 0, 0), TimeSpan.FromMilliseconds(500));
+                ThicknessAnimation animation = new ThicknessAnimation(new Thickness(0, -gridBoard.ActualHeight * 2 * Settings.Default.DropHeightRatio, 0, 0), new Thickness(0, 0, 0, 0), TimeSpan.FromMilliseconds(Settings.Default.AnimationSpeed));
                 animation.EasingFunction = new BounceEase() { Bounces = 3, Bounciness = 5, EasingMode = System.Windows.Media.Animation.EasingMode.EaseOut };
                 fadeIn.BeginTime = animation.BeginTime = TimeSpan.FromMilliseconds((i++) * delayBetweenMoves.TotalMilliseconds); 
                 Storyboard.SetTarget(animation, image);
@@ -177,8 +178,24 @@ namespace ConnectFour
 
         private void ToggleSettings_MouseUp(object sender, MouseButtonEventArgs e)
         {
-
+            if (Menu.IsVisible)
+                Menu.Hide();
+            else
+                Menu.Show();
         }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            Settings.Default.Save();
+            Log.Hide();
+            Menu.Hide();
+            System.Environment.Exit(-1);
+            
+        }
+
+
+
+
 
  
 
