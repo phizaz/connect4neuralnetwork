@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
+using System.IO;
+
+using MySerializer;
 
 namespace NeuralNet
 {
@@ -21,9 +24,8 @@ namespace NeuralNet
 
         List<Example> ValidationSet;
         int ValidateSchedule;
-        double CurrentError = 1.0;
         Network Snapshot; // Snapshot of network that had best validation error thus far.
-        double SnapshotError;
+        double SnapshotError = double.MaxValue;
         Network Network;
 
         private Termination() { }
@@ -46,14 +48,40 @@ namespace NeuralNet
             // Check if we need to run through the validation set.
             if (Type == TerminationType.ByValidationSet && CurrentIteration % ValidateSchedule == 0)
             {
-                // use current network and forward feed to find values... and calculate errors.
-                // TODO
-                // take a network snapshot if the error is lower than last network snapshot.
+                double error = Validate();
+                if (error < SnapshotError)
+                {
+                    // The below is probably horribly inefficient.... what can we do to make it faster?
+                    Network.TrueError = error;
+                    if (!Directory.Exists(Network.Name))
+                        Directory.CreateDirectory(Network.Name);
+                    Serializer.Serialize(Network, Path.Combine(Network.Name, Network.Name + "_" + error.ToString()));
+                    Snapshot = (Network)Serializer.Deserialize(Path.Combine(Network.Name, Network.Name + "_" + error.ToString()));
+                }
             }
-            throw new NotImplementedException();
 
         }
 
+        /// <summary>
+        /// Tests a network by first computing a prediction (foward feeding), then comparing these predictions to the correct labels of examples in the validation set.
+        /// </summary>
+        /// <returns>Root mean squared error of all predictions from labels</returns>
+        public double Validate()
+        {
+            double meanSquaredError = 0;
+            double n = 0;
+            foreach (Example example in ValidationSet)
+            {
+                Network.PropogateInput(example);
+                for (int i = 0; i < example.Predictions.Count; ++i)
+                {
+                    meanSquaredError += Math.Pow((example.Predictions[i] - example.Labels[i]), 2);
+                    ++n;
+                }
+            }
+            meanSquaredError /= n;
+            return Math.Sqrt(meanSquaredError);
+        }
 
         public bool IsNetworkTrained
         {
@@ -67,7 +95,7 @@ namespace NeuralNet
                 }
                 else if (Type == TerminationType.ByValidationSet)
                 {
-                    throw new NotImplementedException();
+                    //throw new NotImplementedException(); Go forever.... until user manually stops.  
                 }
                 return false;
             }
