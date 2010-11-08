@@ -51,12 +51,12 @@ namespace NeuralNet
 		/// <summary>
 		/// Calculates error term.  Used by backward propogation.
 		/// </summary>
-		public void UpdateErrorTerm(double label = double.NaN)
+		public void UpdateErrorTerm(double? label = null)
 		{
             if (Type == NeuronType.Output)
             {
-                Debug.Assert(label != double.NaN, "Label parameter must be provided on output neurons");
-                ErrorTerm = Value * (1 - Value) * (label - Value);
+                Debug.Assert(label != null, "Label parameter must be provided on output neurons");
+                ErrorTerm = Value * (1 - Value) * (label.Value - Value);
             }
             else if (Type == NeuronType.Hidden)
             {

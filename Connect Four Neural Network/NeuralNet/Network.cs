@@ -7,9 +7,17 @@ using System.Diagnostics;
 namespace NeuralNet
 {
 
+    public enum NetworkStatus { Initiated, Running, Paused, Trained }
+
 	[Serializable]
 	public class Network
 	{
+        /// <summary>
+        /// Name of the network. Used to compute file paths to save networks as they are generated.  DefaultPath/Name/Name_1, Name_2, ....
+        /// </summary>
+        public string Name;
+        public double? TrueError = null;
+
 		public List<Neuron> Hiddens { get { return Neurons.Where(n => n.Type == NeuronType.Hidden).ToList(); } }
 		public List<Neuron> Inputs { get { return Neurons.Where(n => n.Type == NeuronType.Input).ToList(); } }
 		public List<Neuron> Outputs { get { return Neurons.Where(n => n.Type == NeuronType.Output).ToList(); } }
@@ -20,9 +28,10 @@ namespace NeuralNet
         public bool IsTrained { get { return Termination.IsNetworkTrained; } }
 
 		private Network() { }  
-		public Network(int inputs, int hiddens, int outputs, Termination termination, NetworkParameters parameters = null) : this (inputs, new List<int>(){hiddens}, outputs, termination, parameters) {}
-		public Network(int inputs, List<int> hiddens, int outputs, Termination termination, NetworkParameters parameters = null, int constants = 1)
+		public Network(string name, int inputs, int hiddens, int outputs, Termination termination, NetworkParameters parameters = null) : this (name, inputs, new List<int>(){hiddens}, outputs, termination, parameters) {}
+		public Network(string name, int inputs, List<int> hiddens, int outputs, Termination termination, NetworkParameters parameters = null, int constants = 1)
 		{
+            Name = name;
 			if (parameters == null)
 				parameters = new NetworkParameters();
 			parameters.Assert();
