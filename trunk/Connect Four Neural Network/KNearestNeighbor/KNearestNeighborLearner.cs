@@ -90,7 +90,7 @@ public class KNearestNeighborLearner
 		List<Double> result = new List<Double>();
 		for (int i = 0; i < best[0].example.Labels.Count; i++)
 		{
-			result[i] = 0.0;
+			result.Add(0.0);
 		}
 		double sumWeight = 0.0;
 
