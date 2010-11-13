@@ -86,8 +86,29 @@ public class KNearestNeighbor
 			}
 		}
 
-		//TODO: perform a weighted average
-		example.Predictions = best[0].example.Labels;
+		// perform a weighted average
+		List<Double> result = new List<Double>();
+		for (int i = 0; i < best[0].example.Labels.Count; i++)
+		{
+			result[i] = 0.0;
+		}
+		double sumWeight = 0.0;
+
+		foreach (BestExample be in best)
+		{
+			double thisWeight = 1 / (1 + be.distance);
+			for (int i = 0; i < result.Count; i++)
+			{
+				result[i] += be.example.Labels[i] * thisWeight;
+			}
+			sumWeight += thisWeight;
+		}
+
+		for (int i = 0; i < result.Count; i++)
+		{
+			result[i] /= sumWeight;
+		}
+		example.Predictions = result;
 	}
 
   
