@@ -98,7 +98,7 @@ namespace ConnectFour
             Mode = mode;
             Checker = Checker.Blue;
             CurrentBoard = new Board();
-            Bot = new Bot(Checker.Green, new Network("Default", CurrentBoard.Rows * CurrentBoard.Columns, 100, 1, null));
+            Bot = new NeuralNetBot(Checker.Green, new Network("Default", CurrentBoard.Rows * CurrentBoard.Columns, 100, 1, null));
         }
 
         public Checker ToggleChecker(Checker checker)
