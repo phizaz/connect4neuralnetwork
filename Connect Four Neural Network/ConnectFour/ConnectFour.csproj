@@ -39,8 +39,9 @@
     <ApplicationIcon>Icons\orbz_water.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DynamicDataDisplay">
-      <HintPath>.\DynamicDataDisplay.dll</HintPath>
+    <Reference Include="DynamicDataDisplay, Version=0.3.0.0, Culture=neutral, PublicKeyToken=5b7d744a7263923f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Library\DynamicDataDisplay.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -185,6 +186,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\violet_light.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Library\DynamicDataDisplay.dll" />
+    <Resource Include="Library\DynamicDataDisplay.XML" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
