@@ -91,6 +91,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Bot.cs" />
+    <Compile Include="NeuralNetBot.cs" />
     <Compile Include="Board.cs" />
     <Compile Include="GameViewer.xaml.cs">
       <DependentUpon>GameViewer.xaml</DependentUpon>

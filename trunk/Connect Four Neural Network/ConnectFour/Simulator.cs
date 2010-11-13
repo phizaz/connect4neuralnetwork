@@ -44,8 +44,8 @@ namespace ConnectFour
             if (network == null)
                 network = new Network("default", board.Rows * board.Columns, 100, 1, null);
 
-            Bot allen = new Bot(Checker.Blue, network); // <-- you know he will win :)
-            Bot jason = new Bot(Checker.Green, network);
+            Bot allen = new NeuralNetBot(Checker.Blue, network); // <-- you know he will win :)
+            Bot jason = new NeuralNetBot(Checker.Green, network);
 
             List<Example> trace = new List<Example>();
 

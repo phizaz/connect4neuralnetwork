@@ -1,34 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using NeuralNet;
 using System.Diagnostics;
 using System.Linq;
 
 namespace ConnectFour
 {
 	/// <summary>
-	/// Plays the game of ConnectFour using a neural network.
+	/// Plays the game of ConnectFour using an unspecified algorithm.
 	/// </summary>
-	public class Bot
+	public abstract class Bot
 	{
-		Network Network;
 		public Checker MyColor;
 
-		public Bot(Checker myColor, Network network)
+		protected Bot(Checker myColor)
 		{
             Debug.Assert(myColor != Checker.Empty);
 			MyColor = myColor;
-            Network = network;
 		}
 
-		double EvaluateBoard(Board board)
-		{
-            Debug.Assert(Network.Inputs.Count == board.Rows * board.Columns);
-
-            Example example = Transform.ToNormalizedExample(board, MyColor);
-            Network.PropogateInput(example);
-			return example.Predictions[0];
-		}
+		protected abstract double EvaluateBoard(Board board);
 
 		public void SelectMove(Board board, out int column, out double score)
 		{
