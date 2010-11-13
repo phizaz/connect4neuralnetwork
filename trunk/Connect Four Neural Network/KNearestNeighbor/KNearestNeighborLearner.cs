@@ -9,15 +9,15 @@ namespace KNearestNeighbor
 {
 
 [Serializable]
-public class KNearestNeighbor
+public class KNearestNeighborLearner
 {
 	public int k; //number of nearest neighbors to use
 	public int n; //number of instances to store as training set
 	public List<Example> savedExamples;
 
-	private KNearestNeighbor() { }  
+	private KNearestNeighborLearner() { }  
 
-	public KNearestNeighbor(int k, int n)
+	public KNearestNeighborLearner(int k, int n)
 	{
 		this.k = k;
 		this.n = n;
