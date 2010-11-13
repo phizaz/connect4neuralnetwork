@@ -11,19 +11,26 @@ namespace KNearestNeighbor
 [Serializable]
 public class KNearestNeighbor
 {
-	public int k;
+	public int k; //number of nearest neighbors to use
+	public int n; //number of instances to store as training set
 	public List<Example> savedExamples;
 
 	private KNearestNeighbor() { }  
 
-	public KNearestNeighbor(int k)
+	public KNearestNeighbor(int k, int n)
 	{
 		this.k = k;
+		this.n = n;
 		this.savedExamples = new List<Example>();
 	}
 
 	public void LearnOneExample(Example example)
 	{
+		if (savedExamples.Count >= n)
+		{
+			//delete the oldest example
+			savedExamples.RemoveAt(1);
+		}
 		savedExamples.Add(example);
 	}
 
