@@ -22,9 +22,19 @@ namespace ConnectFour
 
 		protected override double EvaluateBoard(Board board)
 		{
-			Example example = Transform.ToNormalizedExample(board, MyColor);
+			Example example = MakeExample(board, MyColor);
 			learner.PropogateInput(example);
 			return example.Predictions[0];
+		}
+
+		public override Example MakeExample(Board board, Checker color)
+		{
+			return Transform.ToNormalizedExample(board, color);
+		}
+
+		public override void LearnOneExample(Example example)
+		{
+			learner.LearnOneExample(example);
 		}
 	}
 }
