@@ -152,6 +152,10 @@
       <Project>{A65D1618-73DA-4536-9086-B0F6FF81CE05}</Project>
       <Name>GlassExtension</Name>
     </ProjectReference>
+    <ProjectReference Include="..\KNearestNeighbor\KNearestNeighbor.csproj">
+      <Project>{6AE0512C-3000-4CC3-B706-ED212A8A3FBA}</Project>
+      <Name>KNearestNeighbor</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NeuralNet\NeuralNet.csproj">
       <Project>{331699E3-36C5-40B2-B641-A8882D528B10}</Project>
       <Name>NeuralNet</Name>
