@@ -8,8 +8,8 @@
     <ProjectGuid>{6AE0512C-3000-4CC3-B706-ED212A8A3FBA}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>_KNearestNeighbor</RootNamespace>
-    <AssemblyName>_KNearestNeighbor</AssemblyName>
+    <RootNamespace>KNearestNeighborLearner</RootNamespace>
+    <AssemblyName>KNearestNeighborLearner</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -34,6 +34,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
