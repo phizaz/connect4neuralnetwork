@@ -187,10 +187,8 @@ namespace ConnectFour
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             Settings.Default.Save();
-            Log.Hide();
-            Menu.Hide();
-            System.Environment.Exit(-1);
-            
+            Log.ForceClose();
+            Menu.ForceClose();
         }
 
 

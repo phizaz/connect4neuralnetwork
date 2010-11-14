@@ -23,8 +23,10 @@ namespace NeuralNet
 		public List<Neuron> Outputs { get { return Neurons.Where(n => n.Type == NeuronType.Output).ToList(); } }
 		public List<Neuron> Constants { get { return Neurons.Where(n => n.Type == NeuronType.Constant).ToList(); }}
 		public List<Neuron> Neurons = new List<Neuron>();
+        public List<int> HiddensLayout = new List<int>();
 		public NetworkParameters Parameters = new NetworkParameters();
-		public Termination Termination;
+        Termination _termination;
+        public Termination Termination { get { return _termination; } set { _termination = value; if (_termination != null) _termination.Network = this; }}
         public bool IsTrained { get { return Termination.IsNetworkTrained; } }
 
 		private Network() { }  
@@ -32,9 +34,13 @@ namespace NeuralNet
 		public Network(string name, int inputs, List<int> hiddens, int outputs, Termination termination, NetworkParameters parameters = null, int constants = 1)
 		{
             Name = name;
-			if (parameters == null)
-				parameters = new NetworkParameters();
-			parameters.Assert();
+            Termination = termination;
+            if (parameters != null)
+            {
+                parameters.Assert();
+                Parameters = parameters;
+            }
+            HiddensLayout = hiddens;
 
 			List<List<Neuron>> levels = new List<List<Neuron>>();
 			levels.Add(Enumerable.Range(0, inputs).Select(i => new Neuron(NeuronType.Input)).ToList());
@@ -49,11 +55,11 @@ namespace NeuralNet
 			{
 				foreach (Neuron n in levels[i])
 					foreach (Neuron m in levels[i + 1])
-						n.Attach(m, new Weight(parameters.InitialWeightInterval));
+						n.Attach(m, new Weight(Parameters.InitialWeightInterval));
 
 				foreach (Neuron c in connectToAll)
 					foreach (Neuron m in levels[i + 1])
-						c.Attach(m, new Weight(parameters.InitialWeightInterval));
+						c.Attach(m, new Weight(Parameters.InitialWeightInterval));
 			}
 
 			Neurons = levels.Aggregate<List<Neuron>>((aggregated, level) => { aggregated.AddRange(level); return aggregated; }).ToList();

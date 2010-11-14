@@ -17,16 +17,16 @@ namespace NeuralNet
     [Serializable]
     public class Termination
     {
-        TerminationType Type;
+        public TerminationType Type;
 
         public int CurrentIteration;
-        int TotalIterations;
+        public int TotalIterations;
 
         List<Example> ValidationSet;
-        int ValidateSchedule;
+        public int ValidateCycle;
         Network Snapshot; // Snapshot of network that had best validation error thus far.
         double SnapshotError = double.MaxValue;
-        Network Network;
+        public Network Network;
 
         private Termination() { }
         public static Termination ByIteration(int iterations)
@@ -35,10 +35,10 @@ namespace NeuralNet
             return new Termination() { Type = TerminationType.ByIteration, TotalIterations = iterations };
         }
 
-        public static Termination ByValidationSet(Network network, List<Example> validationSet, int validateSchedule)
+        public static Termination ByValidationSet(List<Example> validationSet, int validateCycle)
         {
-            Debug.Assert(validateSchedule > 0 && validationSet != null && validationSet.Count > 0);
-            return new Termination() { Type = TerminationType.ByValidationSet, ValidateSchedule = validateSchedule, Network = network };
+            Debug.Assert(validateCycle > 0 && validationSet != null && validationSet.Count > 0);
+            return new Termination() { Type = TerminationType.ByValidationSet, ValidationSet = validationSet, ValidateCycle = validateCycle};
         }
 
         public void CompleteIteration()
@@ -46,7 +46,7 @@ namespace NeuralNet
             ++CurrentIteration;
 
             // Check if we need to run through the validation set.
-            if (Type == TerminationType.ByValidationSet && CurrentIteration % ValidateSchedule == 0)
+            if (Type == TerminationType.ByValidationSet && CurrentIteration % ValidateCycle == 0)
             {
                 double error = Validate();
                 if (error < SnapshotError)

@@ -27,20 +27,14 @@ namespace NeuralNet
 
         public override string ToString()
         {
-            String buf = "";
-            for (int x = 0; x < 7; x++)
+            string str = string.Empty;
+            for (int i = 0; i < Features.Count; ++i)
             {
-                buf += "[";
-                for (int y = 0; y < 6; y++)
-                {
-                    double d = Features[y * 7 + x];
-                    buf += d > 0 ? "X" : d < 0 ? "O" : "-";
-                }
-                buf += "]";
+                str += Features[i]<0 ? "x" : Features[i] == 0 ? "-" : "o";
+                if (i % 7 == 0)
+                    str += "\r\n";
             }
-            if (Labels.Count > 0)
-                buf += " : " + Labels[0];
-            return buf;
+            return str;
         }
     }
 }
