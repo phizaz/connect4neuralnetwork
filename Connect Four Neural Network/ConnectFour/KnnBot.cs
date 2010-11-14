@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using KNearestNeighbor;
+using KNearestNeighborLearner;
 using NeuralNet;
 using System.Diagnostics;
 using System.Linq;
@@ -13,11 +13,11 @@ namespace ConnectFour
 	[Serializable]
 	public class KnnBot : Bot
 	{
-		KNearestNeighborLearner learner;
+		KNearestNeighbor learner;
 
 		public KnnBot(Checker myColor) : base(myColor)
 		{
-			learner = new KNearestNeighborLearner(5, 1000);
+			learner = new KNearestNeighbor(5, 1000);
 		}
 
 		protected override double EvaluateBoard(Board board)

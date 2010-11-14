@@ -5,19 +5,19 @@ using System.Text;
 using System.Diagnostics;
 using NeuralNet;
 
-namespace KNearestNeighbor
+namespace KNearestNeighborLearner
 {
 
     [Serializable]
-    public class KNearestNeighborLearner
+    public class KNearestNeighbor
     {
         public int k; //number of nearest neighbors to use
         public int n; //number of instances to store as training set
         public List<Example> savedExamples;
 
-        private KNearestNeighborLearner() { }
+        private KNearestNeighbor() { }
 
-        public KNearestNeighborLearner(int k, int n)
+        public KNearestNeighbor(int k, int n)
         {
             this.k = k;
             this.n = n;
