@@ -21,11 +21,21 @@ namespace ConnectFour
 
 		protected override double EvaluateBoard(Board board)
 		{
-            Debug.Assert(Network.Inputs.Count == board.Rows * board.Columns);
+			Debug.Assert(Network.Inputs.Count == board.Rows * board.Columns);
 
-            Example example = Transform.ToNormalizedExample(board, MyColor);
-            Network.PropogateInput(example);
+			Example example = MakeExample(board, MyColor);
+			Network.PropogateInput(example);
 			return example.Predictions[0];
+		}
+
+		public override Example MakeExample(Board board, Checker color)
+		{
+			return Transform.ToNormalizedExample(board, color);
+		}
+
+		public override void LearnOneExample(Example example)
+		{
+			Network.LearnOneExample(example);
 		}
 	}
 }

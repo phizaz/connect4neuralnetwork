@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using NeuralNet;
 
 namespace ConnectFour
 {
@@ -20,6 +21,9 @@ namespace ConnectFour
 		}
 
 		protected abstract double EvaluateBoard(Board board);
+		public abstract Example MakeExample(Board board, Checker color);
+		public abstract void LearnOneExample(Example example);
+
 
 		public void SelectMove(Board board, out int column, out double score)
 		{
