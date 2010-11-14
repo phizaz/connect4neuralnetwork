@@ -8,6 +8,7 @@ namespace ConnectFour
 	/// <summary>
 	/// Plays the game of ConnectFour using an unspecified algorithm.
 	/// </summary>
+	[Serializable]
 	public abstract class Bot
 	{
 		public Checker MyColor;

@@ -9,6 +9,7 @@ namespace ConnectFour
 	/// <summary>
 	/// Plays the game of ConnectFour using a neural network.
 	/// </summary>
+	[Serializable]
 	public class NeuralNetBot : Bot
 	{
 		Network Network;

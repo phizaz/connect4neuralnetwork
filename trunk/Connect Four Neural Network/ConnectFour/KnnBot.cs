@@ -10,6 +10,7 @@ namespace ConnectFour
 	/// <summary>
 	/// Plays the game of ConnectFour using a K-nearest-neighbor algorithm.
 	/// </summary>
+	[Serializable]
 	public class KnnBot : Bot
 	{
 		KNearestNeighborLearner learner;
