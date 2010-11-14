@@ -11,17 +11,28 @@
         <Label Content="Move Delay" Height="28" HorizontalAlignment="Left" Margin="43,12,0,0" Name="label5" VerticalAlignment="Top" />
         <Slider AutoToolTipPlacement="TopLeft" Height="23" HorizontalAlignment="Left" LargeChange="50" Margin="122,84,0,0" Maximum="2000" Name="sliderAnimationSpeed" SmallChange="10" TickPlacement="None" VerticalAlignment="Top" Width="100" ValueChanged="sliderAnimationSpeed_ValueChanged" />
         <Label Content="Animation Speed" Height="28" HorizontalAlignment="Left" Margin="15,80,0,0" Name="label6" VerticalAlignment="Top" />
-        <Button Content="X" Name="btnDefault" ToolTip="Load default settings." FontSize="8" FontWeight="Bold" Click="btnDefault_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="14" />
+        <Button Content="X" Name="btnDefault" ToolTip="Load default settings/networks." FontSize="8" FontWeight="Bold" Click="btnDefault_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="14" />
 
         <Border BorderThickness="0" HorizontalAlignment="Center" Name="border1" VerticalAlignment="Bottom" Width="199" Background="#0EFFFFFF" CornerRadius="10" Margin="0,0,0,15" Height="69">
             <Grid>
                 <Label Content="{Binding ElementName=sliderDifficulty, Path=Value}" Height="22" HorizontalAlignment="Left" Margin="113,-23,0,0" Name="lblDifficulty" VerticalAlignment="Top" Width="24" FontWeight="Bold" FontSize="11" />
                 <Label Content="Difficulty" Height="28" HorizontalAlignment="Left" Margin="62,-24,0,0" Name="label7" VerticalAlignment="Top" />
-                <Button Content="Load" Height="22" HorizontalAlignment="Left" Margin="78,13,0,0" Name="btnLoadNetwork" VerticalAlignment="Top" Width="45" />
+                <Button Content="Load" Height="22" HorizontalAlignment="Left" Margin="78,13,0,0" Name="btnLoadNetwork" VerticalAlignment="Top" Width="45" Click="btnLoadNetwork_Click" />
                 <Label Content="Network" Height="28" HorizontalAlignment="Left" Margin="15,11,0,0" Name="label3" VerticalAlignment="Top" />
                 <Label Content="Path" Height="28" HorizontalAlignment="Left" Margin="36,37,0,0" Name="label4" VerticalAlignment="Top" />
-                <Label Content="Null" Height="28" HorizontalAlignment="Left" Margin="78,37,0,0" Name="lblNetworkPath" VerticalAlignment="Top" FontStyle="Italic" />
+                <Label Content="Null" Height="28" HorizontalAlignment="Left" Margin="78,37,0,0" Name="lblNetworkPath" VerticalAlignment="Top" FontStyle="Italic" Width="119" />
                 <Button Content="Create" Height="22" HorizontalAlignment="Left" Margin="129,13,0,0" Name="btnCreateNetwork" VerticalAlignment="Top" Width="53" Click="btnCreateNetwork_Click" />
+                <TextBlock Margin="21,44,0,7" Name="btnClear" Text="X" FontSize="10" TextAlignment="Center" ToolTip="Clear path" FontStyle="Italic" HorizontalAlignment="Left" Width="16" MouseUp="btnClearPath_MouseUp">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#16000000" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+                </TextBlock>
             </Grid>
         </Border>
     </Grid>

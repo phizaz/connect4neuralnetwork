@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serializer", "Serializer\Se
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlassExtension", "GlassExtension\GlassExtension.csproj", "{A65D1618-73DA-4536-9086-B0F6FF81CE05}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KNearestNeighbor", "KNearestNeighbor\KNearestNeighbor.csproj", "{6AE0512C-3000-4CC3-B706-ED212A8A3FBA}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -63,6 +65,16 @@ Global
 		{A65D1618-73DA-4536-9086-B0F6FF81CE05}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{A65D1618-73DA-4536-9086-B0F6FF81CE05}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A65D1618-73DA-4536-9086-B0F6FF81CE05}.Release|x86.ActiveCfg = Release|Any CPU
+		{6AE0512C-3000-4CC3-B706-ED212A8A3FBA}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{6AE0512C-3000-4CC3-B706-ED212A8A3FBA}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{6AE0512C-3000-4CC3-B706-ED212A8A3FBA}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{6AE0512C-3000-4CC3-B706-ED212A8A3FBA}.Debug|x86.ActiveCfg = Debug|x86
+		{6AE0512C-3000-4CC3-B706-ED212A8A3FBA}.Debug|x86.Build.0 = Debug|x86
+		{6AE0512C-3000-4CC3-B706-ED212A8A3FBA}.Release|Any CPU.ActiveCfg = Release|x86
+		{6AE0512C-3000-4CC3-B706-ED212A8A3FBA}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{6AE0512C-3000-4CC3-B706-ED212A8A3FBA}.Release|Mixed Platforms.Build.0 = Release|x86
+		{6AE0512C-3000-4CC3-B706-ED212A8A3FBA}.Release|x86.ActiveCfg = Release|x86
+		{6AE0512C-3000-4CC3-B706-ED212A8A3FBA}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

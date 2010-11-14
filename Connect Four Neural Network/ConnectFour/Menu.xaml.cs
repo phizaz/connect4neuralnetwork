@@ -11,8 +11,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+using System.IO;
 using ConnectFour.Properties;
 using GlassExtension;
+using Microsoft.Win32;
 
 namespace ConnectFour
 {
@@ -33,9 +35,48 @@ namespace ConnectFour
             sliderDifficulty.Value = Settings.Default.Difficulty;
             sliderDropHeightRatio.Value = Settings.Default.DropHeightRatio;
             sliderMoveDelay.Value = Settings.Default.MoveDelay;
-            lblNetworkPath.Content = Settings.Default.NetworkPaths[(int)sliderDifficulty.Value] ?? "Null";
+            UpdateNetworkPathLabel();
         }
 
+        public void UpdateNetworkPathLabel()
+        {
+            lblNetworkPath.Content = Settings.Default.CurrentNetworkPath != null ? System.IO.Path.GetFileNameWithoutExtension(Settings.Default.CurrentNetworkPath) : "Null";
+            btnClear.Visibility = Settings.Default.CurrentNetworkPath != null ? Visibility.Visible : Visibility.Hidden;
+        }
+
+
+        private void btnDefault_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.Default.Reset();
+            PopulateControls();
+        }
+
+        private void btnCreateNetwork_Click(object sender, RoutedEventArgs e)
+        {
+            (new NetworkGenerator()).Show();
+        }
+
+        private void btnLoadNetwork_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog open = new OpenFileDialog();
+            open.Filter = "Neural Network|*.net";
+            if (open.ShowDialog().Value)
+            {
+                Settings.Default.CurrentNetworkPath = open.FileName;
+                UpdateNetworkPathLabel();
+            }
+
+        }
+
+        bool forceClose = false;
+        public void ForceClose()
+        {
+            forceClose = true;
+            Close();
+        }
+
+
+        #region Events
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             GlassExtension.Glass.ExtendGlassFrame(this);
@@ -58,26 +99,30 @@ namespace ConnectFour
         private void sliderDifficulty_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             Settings.Default.Difficulty = (int)sliderDifficulty.Value;
-            lblNetworkPath.Content = Settings.Default.NetworkPaths[(int)sliderDifficulty.Value] ?? "Null";
+            UpdateNetworkPathLabel();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             this.Hide();
-            e.Cancel = true;
-        }
+            if (!forceClose)
+                e.Cancel = true;
+        }  
 
-        private void btnDefault_Click(object sender, RoutedEventArgs e)
+        private void btnClearPath_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            Settings.Default.Reset();
-            PopulateControls();
+            Settings.Default.CurrentNetworkPath = null;
+            UpdateNetworkPathLabel();
         }
 
-        private void btnCreateNetwork_Click(object sender, RoutedEventArgs e)
-        {
-            (new NetworkGenerator()).Show();
-        }
 
+
+
+        #endregion
+
+     
+
+    
 
     }
 }

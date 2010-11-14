@@ -48,10 +48,16 @@ namespace ConnectFour
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             this.Hide();
-            e.Cancel = true;
+            if (!forceClose)
+                e.Cancel = true;
         }
 
-
+        bool forceClose = false;
+        public void ForceClose()
+        {
+            forceClose = true;
+            Close();
+        }
 
     }
 }

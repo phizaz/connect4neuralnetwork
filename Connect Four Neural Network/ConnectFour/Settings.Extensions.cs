@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace ConnectFour.Properties
 {
@@ -27,7 +28,19 @@ namespace ConnectFour.Properties
             }
         }
 
-        public string CurrentNetworkPath { get { return NetworkPaths[Difficulty]; } }
+        public string CurrentNetworkPath 
+        { 
+            get { return NetworkPaths[Difficulty]; }
+            set { NetworkPaths[Difficulty] = value; }
+        }
 
+        public string NetworkDirectory
+        {
+            get 
+            {  
+                string d1, d2;
+                return CurrentNetworkPath == null || (d1 = Path.GetDirectoryName(CurrentNetworkPath)) == null || (d2 = Path.GetDirectoryName(d1)) == null ? System.Reflection.Assembly.GetExecutingAssembly().Location : d2;
+            }
+        }
     }
 }
