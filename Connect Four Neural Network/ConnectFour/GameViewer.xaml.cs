@@ -46,6 +46,15 @@ namespace ConnectFour
             Restart(GameMode.HumanVComputer);
         }
 
+        public void Restart(GameMode mode)
+        {
+            gridBoard.Children.RemoveRange(7, gridBoard.Children.Count - 7); // Don't remove the 7 borders.
+            Mode = mode;
+            Checker = Checker.Blue;
+            CurrentBoard = new Board();
+            Bot = new NeuralNetBot(Checker.Green, new Network("Default", CurrentBoard.Rows * CurrentBoard.Columns, 100, 1, null));
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Glass.ExtendGlassFrame(this);
@@ -65,13 +74,15 @@ namespace ConnectFour
         {
             Restart(GameMode.ComputerVComputer);
             Simulator simulator = new Simulator(this);
-            simulator.Play();
-            Log.Show();
+            List<Example> examples = simulator.Play();
         }
 
         private Checker Checker = Checker.Blue;
         private void Border_MouseUp(object sender, MouseEventArgs e)
         {
+            if (CurrentBoard.IsGameOver)
+                return;
+
             int column = (int)(sender as Border).GetValue(Grid.ColumnProperty);
             if (IsColumnFull(column))
                 return;
@@ -81,38 +92,72 @@ namespace ConnectFour
                 double score;
                 int column2;
                 CurrentBoard.AddChecker(Checker, column);
+                if (CurrentBoard.IsGameOver)
+                {
+                    AddChecker(Checker, column, updateBoard:false);
+                    GameOverAnimation();
+                    return;
+                }
                 Bot.SelectMove(CurrentBoard, out column2, out score);
-                CurrentBoard.AddChecker(ToggleChecker(Checker), column2);
-                BatchAddCheckers(Checker, new List<int> { column, column2 }, TimeSpan.FromMilliseconds(Settings.Default.MoveDelay), false);
+                CurrentBoard.AddChecker(Toggle(Checker), column2);
+                BatchAddCheckers(Checker, new List<int> { column, column2 }, updateBoard:false);
             }
             else
             {
                 AddChecker(Checker, column);
-                Checker = ToggleChecker(Checker);
+                Checker = Toggle(Checker);
             }
+
+            if (CurrentBoard.IsGameOver)
+                GameOverAnimation();
         }
 
-        public void Restart(GameMode mode)
+        public void GameOverAnimation()
         {
-            gridBoard.Children.RemoveRange(7, gridBoard.Children.Count - 7);
-            Mode = mode;
-            Checker = Checker.Blue;
-            CurrentBoard = new Board();
-            Bot = new NeuralNetBot(Checker.Green, new Network("Default", CurrentBoard.Rows * CurrentBoard.Columns, 100, 1, null));
+            if (!CurrentBoard.IsGameOver)
+                return;
+            
+            Storyboard story = new Storyboard();
+            for (int i=0; i<CurrentBoard.Rows; ++i)
+                for (int j=0; j<CurrentBoard.Columns; ++j)
+                {
+                    if (!CurrentBoard.WinningSequence.Any(t => t.Item1 == i && t.Item2 == j))
+                    {
+                        Image image = gridBoard.Children.OfType<Image>().Where(e => (int)e.GetValue(Grid.RowProperty) == i && (int)e.GetValue(Grid.ColumnProperty) == j).FirstOrDefault();
+                        if (image == null)
+                            continue;
+                        story.Children.Add(Fade(image, 1, .25, 0, 1000));
+                    }
+                }
+            story.Begin();
         }
 
-        public Checker ToggleChecker(Checker checker)
+
+        DoubleAnimation Fade(Image image, double from, double to, int beginTime, int duration)
+        {
+            DoubleAnimation fade = new DoubleAnimation(from, to, TimeSpan.FromMilliseconds(duration));
+            fade.BeginTime = TimeSpan.FromMilliseconds(beginTime);
+            Storyboard.SetTarget(fade, image);
+            Storyboard.SetTargetProperty(fade, new PropertyPath(Image.OpacityProperty));
+            return fade;
+        }
+
+ 
+
+
+
+        public Checker Toggle(Checker checker)
         {
             return (checker == Checker.Green ? Checker.Blue : Checker.Green);
         }
 
 
-        public void AddChecker(Checker checker, int column, bool updateBoard = true)
+        public void AddChecker(Checker checker, int column, bool isGameOver = false, bool updateBoard = true)
         {
-            BatchAddCheckers(checker, new List<int> { column }, TimeSpan.Zero, updateBoard); 
+            BatchAddCheckers(checker, new List<int> { column }, updateBoard:updateBoard, delay:false, completedBoard:null); 
         }
 
-        public void BatchAddCheckers(Checker start, List<int> columnHistory, TimeSpan delayBetweenMoves, bool updateBoard = true)
+        public void BatchAddCheckers(Checker start, List<int> columnHistory, bool updateBoard = true, bool delay = true, Board completedBoard=null)
         {
             Storyboard story = new Storyboard();
             Checker checker = start;
@@ -135,19 +180,19 @@ namespace ConnectFour
                 if (updateBoard)
                     CurrentBoard.AddChecker(checker, column);
 
-                DoubleAnimation fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(0));
                 ThicknessAnimation animation = new ThicknessAnimation(new Thickness(0, -gridBoard.ActualHeight * 2 * Settings.Default.DropHeightRatio, 0, 0), new Thickness(0, 0, 0, 0), TimeSpan.FromMilliseconds(Settings.Default.AnimationSpeed));
                 animation.EasingFunction = new BounceEase() { Bounces = 3, Bounciness = 5, EasingMode = System.Windows.Media.Animation.EasingMode.EaseOut };
-                fadeIn.BeginTime = animation.BeginTime = TimeSpan.FromMilliseconds((i++) * delayBetweenMoves.TotalMilliseconds); 
+                animation.BeginTime = TimeSpan.FromMilliseconds(i * Settings.Default.MoveDelay); 
                 Storyboard.SetTarget(animation, image);
                 Storyboard.SetTargetProperty(animation, new PropertyPath(Image.MarginProperty));
-                Storyboard.SetTarget(fadeIn, image);
-                Storyboard.SetTargetProperty(fadeIn, new PropertyPath(Image.OpacityProperty));
                 story.Children.Add(animation);
-                story.Children.Add(fadeIn);
+
+                DoubleAnimation fade = (completedBoard != null && !completedBoard.WinningSequence.Any(t => t.Item1 == row && t.Item2 == column) ? Fade(image, 1, .25, i * Settings.Default.MoveDelay, 1000) : Fade(image, 0, 1, i * Settings.Default.MoveDelay, 0));
+                story.Children.Add(fade);
                 story.Completed += new EventHandler(story_Completed);
 
-                checker = ToggleChecker(checker);
+                checker = Toggle(checker);
+                ++i;
             }
             story.Begin();
         }
@@ -164,7 +209,7 @@ namespace ConnectFour
             foreach (var child in story.Children)
             {
                 Image image = (Image)Storyboard.GetTarget(child);
-                image.ClearValue(Image.HeightProperty);
+                image.ClearValue(Image.HeightProperty); // Keeps images resizable if window is resized.
             }
         }
 

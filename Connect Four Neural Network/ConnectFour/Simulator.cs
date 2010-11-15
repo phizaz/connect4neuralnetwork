@@ -68,7 +68,7 @@ namespace ConnectFour
             }
 
             if (Viewer != null)
-                Viewer.BatchAddCheckers(allen.MyColor, board.MoveHistory, TimeSpan.FromMilliseconds(Settings.Default.MoveDelay));
+                Viewer.BatchAddCheckers(allen.MyColor, board.MoveHistory,completedBoard:board);
 
             TotalTurns += Turns;
 

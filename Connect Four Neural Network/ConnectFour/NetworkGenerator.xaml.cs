@@ -16,7 +16,7 @@ using Microsoft.Research.DynamicDataDisplay.DataSources;
 using GlassExtension;
 using NeuralNet;
 using MySerializer;
-using System.Threading;
+using System.IO;
 
 namespace ConnectFour
 {
@@ -25,6 +25,8 @@ namespace ConnectFour
     /// </summary>
     public partial class NetworkGenerator : Window
     {
+        private enum NetworkSource { Loaded, New }
+        private NetworkSource Source;
         private ObservableDataSource<Point> ValidationPlot = new ObservableDataSource<Point>();
         private ObservableDataSource<Point> TrainingPlot = new ObservableDataSource<Point>();
         public Network Network;
@@ -62,6 +64,7 @@ namespace ConnectFour
             tbValidateCycle.Text = "500";
             ValidationPlot.Collection.Clear();
             TrainingPlot.Collection.Clear();
+            Source = NetworkSource.New;
         }
 
 
@@ -82,8 +85,9 @@ namespace ConnectFour
             tbValidateCycle.Text = network.Termination.ValidateCycle.ToString();
             ValidationPlot.Collection.Clear();
             TrainingPlot.Collection.Clear();
+            Source = NetworkSource.Loaded;
 
-            tbName.IsEnabled = tbInputs.IsEnabled = tbHiddens.IsEnabled = tbOutputs.IsEnabled = tbInitialWeightMax.IsEnabled = tbInitialWeightMin.IsEnabled = false;
+            tbInputs.IsEnabled = tbHiddens.IsEnabled = tbOutputs.IsEnabled = tbInitialWeightMax.IsEnabled = tbInitialWeightMin.IsEnabled = false;
         }
 
 
@@ -144,8 +148,17 @@ namespace ConnectFour
                     MomentumDecay = ToDouble(tbMomentumDecay)
                 };
 
+                string name = ToString(tbName, s => s.Trim() != string.Empty, "Network name cannot be empty.");
+                if (Source == NetworkSource.New && Directory.Exists(name))
+                {
+                    if (MessageBox.Show("Neural Net folder already exists.\r\nDelete contents?\r\nIf not, use a unique name", "Error", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                        (new DirectoryInfo(name)).Delete(true);
+                    else
+                        return;
+                }
+
                 Network = new Network(
-                    ToString(tbName, s => s.Trim() != string.Empty, "Network name cannot be empty."),
+                    name,
                     ToInt(tbInputs, x => x > 0, "Number of input nodes must be > 0"),
                     tbHiddens.Text.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).Select(x => ToInt(x, tbHiddens, xx => xx > 0, "Number of hidden nodes must be > 0 per layer")).ToList<int>(),
                     ToInt(tbOutputs, x => x > 0, "Number of output nodes must be > 0"),

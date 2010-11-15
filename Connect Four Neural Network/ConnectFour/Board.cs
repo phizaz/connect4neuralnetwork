@@ -16,6 +16,8 @@ namespace ConnectFour
         public int Rows { get { return Cells.GetLength(0); } }
         public int Columns { get { return Cells.GetLength(1); } }
         public Checker[,] Cells;
+        private List<Tuple<int,int>> _lastSequence = new List<Tuple<int,int>>();
+        public List<Tuple<int, int>> WinningSequence { get { return IsGameOver && _lastSequence.Count >= 4 ? _lastSequence : new List<Tuple<int, int>>(); } } 
 
         public Board(int rows=6, int columns=7)
         {
@@ -91,9 +93,11 @@ namespace ConnectFour
 		int CheckSequence(int y, int x, int dy, int dx)
 		{
 			Checker checker = Cells[y,x];
-			if (checker == Checker.Empty)
+            if (checker == Checker.Empty)
 				return 0;
 
+            _lastSequence.Clear();
+            _lastSequence.Add(Tuple.Create(y, x));
 			for (int num = 1;; num++)
 			{
 				y += dy;
@@ -104,6 +108,7 @@ namespace ConnectFour
 					return num;
 				if (Cells[y,x] != checker)
 					return num;
+                _lastSequence.Add(Tuple.Create(y, x));
 			}
 		}
 
@@ -122,11 +127,11 @@ namespace ConnectFour
 
                     if (CheckSequence(y, x, -1, 1) >= 4)
                         winner = Cells[y, x];
-                    if (CheckSequence(y, x, 0, 1) >= 4)
+                    else if (CheckSequence(y, x, 0, 1) >= 4)
                         winner = Cells[y, x];
-                    if (CheckSequence(y, x, 1, 1) >= 4)
+                    else if (CheckSequence(y, x, 1, 1) >= 4)
                         winner = Cells[y, x];
-                    if (CheckSequence(y, x, 1, 0) >= 4)
+                    else if (CheckSequence(y, x, 1, 0) >= 4)
                         winner = Cells[y, x];
                     if (winner != Checker.Empty)
                         return true;
