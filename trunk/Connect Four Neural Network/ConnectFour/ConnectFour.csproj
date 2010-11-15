@@ -151,6 +151,8 @@
     <ProjectReference Include="..\GlassExtension\GlassExtension.csproj">
       <Project>{A65D1618-73DA-4536-9086-B0F6FF81CE05}</Project>
       <Name>GlassExtension</Name>
+      <Private>True</Private>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </ProjectReference>
     <ProjectReference Include="..\KNearestNeighbor\KNearestNeighbor.csproj">
       <Project>{6AE0512C-3000-4CC3-B706-ED212A8A3FBA}</Project>
@@ -163,6 +165,7 @@
     <ProjectReference Include="..\Serializer\Serializer.csproj">
       <Project>{36E1491F-58C6-4BFE-ADE9-BAEA5BE8D9CA}</Project>
       <Name>Serializer</Name>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -209,7 +212,7 @@
     <Resource Include="Icons\violet_light.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Library\DynamicDataDisplay.dll" />
+    <EmbeddedResource Include="Library\DynamicDataDisplay.dll" />
     <None Include="Library\DynamicDataDisplay.XML" />
   </ItemGroup>
   <ItemGroup>

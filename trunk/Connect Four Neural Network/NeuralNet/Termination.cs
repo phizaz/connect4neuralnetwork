@@ -55,8 +55,9 @@ namespace NeuralNet
                     Network.TrueError = error;
                     if (!Directory.Exists(Network.Name))
                         Directory.CreateDirectory(Network.Name);
-                    Serializer.Serialize(Network, Path.Combine(Network.Name, Network.Name + "_" + error.ToString()));
-                    Snapshot = (Network)Serializer.Deserialize(Path.Combine(Network.Name, Network.Name + "_" + error.ToString()));
+                    //Snapshot = null; // Sever links of more than 1 snapshot back.  
+                    Serializer.Serialize(Network, Path.Combine(Network.Name, Network.Name + "_" + error.ToString()) + ".net");
+                    Snapshot = (Network)Serializer.Deserialize(Path.Combine(Network.Name, Network.Name + "_" + error.ToString()) + ".net");
                 }
             }
 
