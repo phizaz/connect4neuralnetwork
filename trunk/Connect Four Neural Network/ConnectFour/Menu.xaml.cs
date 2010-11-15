@@ -31,10 +31,12 @@ namespace ConnectFour
 
         private void PopulateControls()
         {
-            sliderAnimationSpeed.Value = Settings.Default.AnimationSpeed;
+            sliderDropSpeed.Value = Settings.Default.DropSpeed;
             sliderDifficulty.Value = Settings.Default.Difficulty;
             sliderDropHeightRatio.Value = Settings.Default.DropHeightRatio;
             sliderMoveDelay.Value = Settings.Default.MoveDelay;
+            sliderFadeTo.Value = Settings.Default.FadeTo;
+            sliderFadeSpeed.Value = Settings.Default.FadeSpeed;
             UpdateNetworkPathLabel();
         }
 
@@ -91,10 +93,21 @@ namespace ConnectFour
             Settings.Default.DropHeightRatio = sliderDropHeightRatio.Value;
         }
 
-        private void sliderAnimationSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void sliderDropSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            Settings.Default.AnimationSpeed = (int)sliderAnimationSpeed.Value;
+            Settings.Default.DropSpeed = (int)sliderDropSpeed.Value;
         }
+
+        private void sliderFadeTo_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Settings.Default.FadeTo = (double)sliderFadeTo.Value;
+        }
+
+        private void sliderFadeSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Settings.Default.FadeSpeed = (int)sliderFadeSpeed.Value;
+        }
+
 
         private void sliderDifficulty_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -119,6 +132,8 @@ namespace ConnectFour
 
 
         #endregion
+
+
 
      
 

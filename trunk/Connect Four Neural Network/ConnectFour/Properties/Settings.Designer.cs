@@ -49,12 +49,12 @@ namespace ConnectFour.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("500")]
-        public int AnimationSpeed {
+        public int DropSpeed {
             get {
-                return ((int)(this["AnimationSpeed"]));
+                return ((int)(this["DropSpeed"]));
             }
             set {
-                this["AnimationSpeed"] = value;
+                this["DropSpeed"] = value;
             }
         }
         
@@ -79,6 +79,30 @@ namespace ConnectFour.Properties {
             }
             set {
                 this["Difficulty"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int FadeSpeed {
+            get {
+                return ((int)(this["FadeSpeed"]));
+            }
+            set {
+                this["FadeSpeed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.25")]
+        public double FadeTo {
+            get {
+                return ((double)(this["FadeTo"]));
+            }
+            set {
+                this["FadeTo"] = value;
             }
         }
     }

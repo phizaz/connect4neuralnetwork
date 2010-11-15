@@ -126,7 +126,7 @@ namespace ConnectFour
                         Image image = gridBoard.Children.OfType<Image>().Where(e => (int)e.GetValue(Grid.RowProperty) == i && (int)e.GetValue(Grid.ColumnProperty) == j).FirstOrDefault();
                         if (image == null)
                             continue;
-                        story.Children.Add(Fade(image, 1, .25, 0, 1000));
+                        story.Children.Add(Fade(image, 1, Settings.Default.FadeTo, 0, Settings.Default.FadeSpeed));
                     }
                 }
             story.Begin();
@@ -180,14 +180,14 @@ namespace ConnectFour
                 if (updateBoard)
                     CurrentBoard.AddChecker(checker, column);
 
-                ThicknessAnimation animation = new ThicknessAnimation(new Thickness(0, -gridBoard.ActualHeight * 2 * Settings.Default.DropHeightRatio, 0, 0), new Thickness(0, 0, 0, 0), TimeSpan.FromMilliseconds(Settings.Default.AnimationSpeed));
+                ThicknessAnimation animation = new ThicknessAnimation(new Thickness(0, -gridBoard.ActualHeight * 2 * Settings.Default.DropHeightRatio, 0, 0), new Thickness(0, 0, 0, 0), TimeSpan.FromMilliseconds(Settings.Default.DropSpeed));
                 animation.EasingFunction = new BounceEase() { Bounces = 3, Bounciness = 5, EasingMode = System.Windows.Media.Animation.EasingMode.EaseOut };
                 animation.BeginTime = TimeSpan.FromMilliseconds(i * Settings.Default.MoveDelay); 
                 Storyboard.SetTarget(animation, image);
                 Storyboard.SetTargetProperty(animation, new PropertyPath(Image.MarginProperty));
                 story.Children.Add(animation);
 
-                DoubleAnimation fade = (completedBoard != null && !completedBoard.WinningSequence.Any(t => t.Item1 == row && t.Item2 == column) ? Fade(image, 1, .25, i * Settings.Default.MoveDelay, 1000) : Fade(image, 0, 1, i * Settings.Default.MoveDelay, 0));
+                DoubleAnimation fade = (completedBoard != null && !completedBoard.WinningSequence.Any(t => t.Item1 == row && t.Item2 == column) ? Fade(image, 1, Settings.Default.FadeTo, i * Settings.Default.MoveDelay, Settings.Default.FadeSpeed) : Fade(image, 0, 1, i * Settings.Default.MoveDelay, 0));
                 story.Children.Add(fade);
                 story.Completed += new EventHandler(story_Completed);
 
