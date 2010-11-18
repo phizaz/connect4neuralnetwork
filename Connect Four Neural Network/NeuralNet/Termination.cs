@@ -22,12 +22,13 @@ namespace NeuralNet
         public int CurrentIteration;
         public int TotalIterations;
 
-        List<Example> ValidationSet;
+        [NonSerialized]
+        public List<Example> ValidationSet;
         public int ValidateCycle;
-        Network Snapshot; // Snapshot of network that had best validation error thus far.
+        string Snapshot; // Snapshot of network that had best validation error thus far.
         double SnapshotError = double.MaxValue;
         public Network Network;
-
+        
         private Termination() { }
         public static Termination ByIteration(int iterations)
         {
@@ -43,7 +44,6 @@ namespace NeuralNet
 
         public void CompleteIteration()
         {
-            ++CurrentIteration;
 
             // Check if we need to run through the validation set.
             if (Type == TerminationType.ByValidationSet && CurrentIteration % ValidateCycle == 0)
@@ -56,10 +56,12 @@ namespace NeuralNet
                     if (!Directory.Exists(Network.Name))
                         Directory.CreateDirectory(Network.Name);
                     //Snapshot = null; // Sever links of more than 1 snapshot back.  
-                    Serializer.Serialize(Network, Path.Combine(Network.Name, Network.Name + "_" + error.ToString()) + ".net");
-                    Snapshot = (Network)Serializer.Deserialize(Path.Combine(Network.Name, Network.Name + "_" + error.ToString()) + ".net");
+                    Snapshot = Path.Combine(Network.Name, Network.Name + "_" + error.ToString()) + ".net";
+                    Serializer.Serialize(Network, Snapshot);
                 }
             }
+
+            ++CurrentIteration;
 
         }
 
@@ -71,7 +73,7 @@ namespace NeuralNet
         {
             double meanSquaredError = 0;
             double n = 0;
-            foreach (Example example in ValidationSet)
+            foreach (Example example in ValidationSet.Take(500))
             {
                 Network.PropogateInput(example);
                 for (int i = 0; i < example.Predictions.Count; ++i)
