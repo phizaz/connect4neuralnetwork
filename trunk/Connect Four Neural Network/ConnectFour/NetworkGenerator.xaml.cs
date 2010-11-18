@@ -17,23 +17,54 @@ using GlassExtension;
 using NeuralNet;
 using MySerializer;
 using System.IO;
+using System.Threading;
 
 namespace ConnectFour
 {
+    public enum TrainStatus { Create, Running, Paused, Finished }
+
     /// <summary>
     /// Interaction logic for NetworkGenerator.xaml
     /// </summary>
     public partial class NetworkGenerator : Window
     {
-        private enum NetworkSource { Loaded, New }
-        private NetworkSource Source;
         private ObservableDataSource<Point> ValidationPlot = new ObservableDataSource<Point>();
         private ObservableDataSource<Point> TrainingPlot = new ObservableDataSource<Point>();
         public Network Network;
+        public Trainer Trainer;
+        Thread Thread;
+
+        private TrainStatus _status = TrainStatus.Create;
+        public TrainStatus Status
+        {
+            get { return _status; }
+            set
+            {
+                switch (value)
+                {
+                    case TrainStatus.Create: btnStart.Content = "Start"; EnableAllControls();  break;
+                    case TrainStatus.Running: btnStart.Content = "Pause"; EnableAllControls(false); btnStart.IsEnabled = true; break;
+                    case TrainStatus.Paused: btnStart.Content = "Resume"; EnableAllControls(); DisableInitialControls(); break;
+                    case TrainStatus.Finished: btnStart.Content = "Done"; EnableAllControls(false); DisableInitialControls(); break;
+                }
+                lbStatus.Content = value.ToString();
+                _status = value;
+            }
+        }
 
         public NetworkGenerator()
         {
             InitializeComponent();
+        }
+
+        public void EnableAllControls(bool enable = true)
+        {
+            tbName.IsEnabled = tbInputs.IsEnabled = tbHiddens.IsEnabled = tbOutputs.IsEnabled = tbLearningRate.IsEnabled = tbMomentum.IsEnabled = tbInitialWeightMin.IsEnabled = tbInitialWeightMax.IsEnabled = cbTerminationType.IsEnabled = tbIterations.IsEnabled = tbValidateCycle.IsEnabled = btnStart.IsEnabled = enable;
+        }
+
+        public void DisableInitialControls()
+        {
+            tbInputs.IsEnabled = tbHiddens.IsEnabled = tbOutputs.IsEnabled = tbInitialWeightMax.IsEnabled = tbInitialWeightMin.IsEnabled = false;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -64,7 +95,7 @@ namespace ConnectFour
             tbValidateCycle.Text = "500";
             ValidationPlot.Collection.Clear();
             TrainingPlot.Collection.Clear();
-            Source = NetworkSource.New;
+            Status = TrainStatus.Create;
         }
 
 
@@ -85,9 +116,6 @@ namespace ConnectFour
             tbValidateCycle.Text = network.Termination.ValidateCycle.ToString();
             ValidationPlot.Collection.Clear();
             TrainingPlot.Collection.Clear();
-            Source = NetworkSource.Loaded;
-
-            tbInputs.IsEnabled = tbHiddens.IsEnabled = tbOutputs.IsEnabled = tbInitialWeightMax.IsEnabled = tbInitialWeightMin.IsEnabled = false;
         }
 
 
@@ -122,8 +150,9 @@ namespace ConnectFour
                 {
                     Network = (Network)Serializer.Deserialize(open.FileName);
                     PopulateControls(Network);
+                    Status = TrainStatus.Paused;
                 }
-                catch { MessageBox.Show("Could deserialize " + open.FileName.ToString(), "Error"); }
+                catch { MessageBox.Show("Could not deserialize " + open.FileName.ToString(), "Error"); }
             }
         }
 
@@ -131,6 +160,15 @@ namespace ConnectFour
         {
             try
             {
+                if (Status == TrainStatus.Running)
+                {
+                    Status = TrainStatus.Paused;
+                    return;
+                }
+
+                if (Thread != null && Thread.IsAlive)
+                   Thread.Join(); // Wait for last thread to finish working before starting again.
+
                 Termination termination;
                 if (cbTerminationType.Text == "ByValidationSet")
                     termination = Termination.ByValidationSet(DataParser.ValidationSet, ToInt(tbValidateCycle, x => x > 0, "Validation cycle must be > 0"));
@@ -149,24 +187,38 @@ namespace ConnectFour
                 };
 
                 string name = ToString(tbName, s => s.Trim() != string.Empty, "Network name cannot be empty.");
-                if (Source == NetworkSource.New && Directory.Exists(name))
+                if (Network == null && Directory.Exists(name))
                 {
-                    if (MessageBox.Show("Neural Net folder already exists.\r\nDelete contents?\r\nIf not, use a unique name", "Error", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                    if (MessageBox.Show("Neural Net folder already exists. Delete contents?\r\nIf not, use a unique name.", "Error", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                         (new DirectoryInfo(name)).Delete(true);
                     else
                         return;
                 }
 
-                Network = new Network(
-                    name,
-                    ToInt(tbInputs, x => x > 0, "Number of input nodes must be > 0"),
-                    tbHiddens.Text.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).Select(x => ToInt(x, tbHiddens, xx => xx > 0, "Number of hidden nodes must be > 0 per layer")).ToList<int>(),
-                    ToInt(tbOutputs, x => x > 0, "Number of output nodes must be > 0"),
-                    termination,
-                    parameters);
 
-                Trainer trainer = new Trainer(Network);
-                trainer.Train(TrainingRegimen.Empty);
+                if (Network == null)
+                {
+                    Network = new Network(
+                        name,
+                        ToInt(tbInputs, x => x > 0, "Number of input nodes must be > 0"),
+                        tbHiddens.Text.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).Select(x => ToInt(x, tbHiddens, xx => xx > 0, "Number of hidden nodes must be > 0 per layer")).ToList<int>(),
+                        ToInt(tbOutputs, x => x > 0, "Number of output nodes must be > 0"),
+                        termination,
+                        parameters);
+                }
+                else
+                {
+                    Network.Termination.Type = termination.Type;
+                    Network.Termination.ValidationSet = termination.ValidationSet;
+                    Network.Termination.ValidateCycle = termination.ValidateCycle;
+                    Network.Termination.TotalIterations = termination.TotalIterations;
+                    Network.Parameters = parameters;
+                    Network.Name = name;
+                }
+
+                Status = TrainStatus.Running;;
+                Thread = new Thread(new ThreadStart(DoTrain)) { IsBackground = true };
+                Thread.Start();
             }
             catch (Exception x)
             {
@@ -174,6 +226,13 @@ namespace ConnectFour
             }
         }
 
+
+        void DoTrain()
+        {
+            Trainer = new Trainer(Network, this);
+            Trainer.Train(TrainingRegimen.Empty);
+        }
+        
         public int ToInt(TextBox tb, Func<int, bool> func = null, string errorMessage=null)
         {
             return ToInt(tb.Text, tb, func, errorMessage);
