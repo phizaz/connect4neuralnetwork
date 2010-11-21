@@ -28,12 +28,27 @@ namespace NeuralNet
         public override string ToString()
         {
             string str = string.Empty;
-            for (int i = 0; i < Features.Count; ++i)
-            {
-                str += Features[i]<0 ? "x" : Features[i] == 0 ? "-" : "o";
-                if (i % 7 == 0)
-                    str += "\r\n";
+			if (Features.Count == 42)
+			{
+				// treat this as a Connect-Four simple example
+            	for (int i = 0; i < Features.Count; ++i)
+            	{
+                	str += Features[i]<0 ? "x" : Features[i] == 0 ? "-" : "o";
+                	if (i % 7 == 6 && i < Features.Count - 1)
+                    	str += "\r\n";
+				}
             }
+			else
+			{
+				for (int i = 0; i < Features.Count; i++)
+				{
+					str += String.Format("{0:#.00} ", Features[i]);
+				}
+			}
+			if (Predictions.Count > 0)
+				str += "  predicted " + Predictions[0];
+			if (Labels.Count > 0)
+				str += "  labeled " + Labels[0];
             return str;
         }
     }
