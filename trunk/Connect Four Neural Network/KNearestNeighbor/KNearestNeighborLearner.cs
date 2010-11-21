@@ -64,6 +64,13 @@ namespace KNearestNeighborLearner
             }
         }
 
+	class LearnerNotReady : ApplicationException
+	{
+		public LearnerNotReady() : base("Learner is not ready to make predictions.")
+		{
+		}
+	}
+
         public void PropogateInput(Example example)
         {
             List<BestExample> best = new List<BestExample>();
@@ -85,6 +92,9 @@ namespace KNearestNeighborLearner
                     best[k - 1] = new BestExample(e, d);
                 }
             }
+
+		if (best.Count < 1)
+			throw new LearnerNotReady();
 
             // perform a weighted average
             List<Double> result = new List<Double>();
