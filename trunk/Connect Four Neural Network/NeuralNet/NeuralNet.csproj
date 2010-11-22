@@ -51,6 +51,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NetworkTimer.cs" />
     <Compile Include="Termination.cs" />
     <Compile Include="Weight.cs" />
     <Page Include="MainWindow.xaml">

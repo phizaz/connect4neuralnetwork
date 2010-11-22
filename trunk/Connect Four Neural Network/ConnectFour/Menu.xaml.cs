@@ -49,7 +49,11 @@ namespace ConnectFour
 
         private void btnDefault_Click(object sender, RoutedEventArgs e)
         {
+            var paths = Settings.Default.NetworkPathsRaw;
+            var difficulty = Settings.Default.Difficulty;
             Settings.Default.Reset();
+            Settings.Default.NetworkPathsRaw = paths;
+            Settings.Default.Difficulty = difficulty;
             PopulateControls();
         }
 
@@ -62,9 +66,11 @@ namespace ConnectFour
         {
             OpenFileDialog open = new OpenFileDialog();
             open.Filter = "Neural Network|*.net";
+            open.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
             if (open.ShowDialog().Value)
             {
-                Settings.Default.CurrentNetworkPath = open.FileName;
+                Settings.Default.CurrentNetworkPath = open.FileName.Replace(AppDomain.CurrentDomain.BaseDirectory,""); // If network originates in application folder, then make it relative location.  
+                Settings.Default.CurrentNetwork = null;
                 UpdateNetworkPathLabel();
             }
 

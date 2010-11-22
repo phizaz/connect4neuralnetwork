@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-
+using NeuralNet;
+using MySerializer;
 namespace ConnectFour.Properties
 {
     internal sealed partial class Settings
@@ -18,6 +19,12 @@ namespace ConnectFour.Properties
                     NetworkPathsRaw = new System.Collections.Specialized.StringCollection();
                     for (int i = 0; i <= 10; ++i)
                         NetworkPathsRaw.Add(null);
+                }
+                else
+                {
+                    for (int i = 0; i < NetworkPathsRaw.Count; ++i)
+                        if (NetworkPathsRaw[i] != null && !File.Exists(NetworkPathsRaw[i]))
+                            NetworkPathsRaw[i] = null;
                 }
                 return NetworkPathsRaw;
             }
@@ -34,12 +41,22 @@ namespace ConnectFour.Properties
             set { NetworkPaths[Difficulty] = value; }
         }
 
-        public string NetworkDirectory
+        public Network[] Networks = new Network[11];
+
+        public Network CurrentNetwork 
         {
             get 
-            {  
-                string d1, d2;
-                return CurrentNetworkPath == null || (d1 = Path.GetDirectoryName(CurrentNetworkPath)) == null || (d2 = Path.GetDirectoryName(d1)) == null ? System.Reflection.Assembly.GetExecutingAssembly().Location : d2;
+            {
+                if (Networks[Difficulty] != null)
+                    return Networks[Difficulty];
+                else if (NetworkPaths[Difficulty] != null)
+                    return Networks[Difficulty] = (Network)Serializer.Deserialize(CurrentNetworkPath);
+                else
+                    return null;
+            }
+            set
+            {
+                Networks[Difficulty] = value;
             }
         }
     }

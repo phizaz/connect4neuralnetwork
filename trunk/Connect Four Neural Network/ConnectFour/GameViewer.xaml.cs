@@ -35,15 +35,22 @@ namespace ConnectFour
     {
         public GameMode Mode;
         public Board CurrentBoard;
+        public Simulator Simulator;
         public Bot Bot;
 
         public Log Log = new Log();
         public Menu Menu = new Menu();
-
+        Network Network = new Network("default", 6*7, 100, 1, null);
         public GameViewer()
         {
             InitializeComponent();
             Restart(GameMode.HumanVComputer);
+            Simulator = new Simulator(this);
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Glass.ExtendGlassFrame(this);
         }
 
         public void Restart(GameMode mode)
@@ -52,12 +59,13 @@ namespace ConnectFour
             Mode = mode;
             Checker = Checker.Blue;
             CurrentBoard = new Board();
-            Bot = new NeuralNetBot(Checker.Green, new Network("Default", CurrentBoard.Rows * CurrentBoard.Columns, 100, 1, null));
-        }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            Glass.ExtendGlassFrame(this);
+            if (mode == GameMode.HumanVComputer || mode == GameMode.ComputerVComputer)
+                if (Settings.Default.CurrentNetwork == null)
+                {
+                    MessageBox.Show("Current network path is null or invalid.\r\nLoad a new network in settings.");
+                    Menu.UpdateNetworkPathLabel();
+                }
         }
 
         private void HumanVHuman_MouseUp(object sender, MouseButtonEventArgs e)
@@ -67,14 +75,15 @@ namespace ConnectFour
 
         private void HumanVComputer_MouseUp(object sender, MouseButtonEventArgs e)
         {
+
             Restart(GameMode.HumanVComputer);
         }
 
         private void ComputerVComputer_MouseUp(object sender, MouseButtonEventArgs e)
         {
             Restart(GameMode.ComputerVComputer);
-            Simulator simulator = new Simulator(this);
-            List<Example> examples = simulator.Play();
+            if (Settings.Default.CurrentNetwork != null)
+                Simulator.Play(TrainingRegimen.Random(), Settings.Default.CurrentNetwork);
         }
 
         private Checker Checker = Checker.Blue;
@@ -82,6 +91,13 @@ namespace ConnectFour
         {
             if (CurrentBoard.IsGameOver)
                 return;
+
+            if (Mode == GameMode.HumanVComputer)
+            {
+                if (Settings.Default.CurrentNetwork == null)
+                    return;
+                Bot = new NeuralNetBot(Checker.Green, Settings.Default.CurrentNetwork);
+            }
 
             int column = (int)(sender as Border).GetValue(Grid.ColumnProperty);
             if (IsColumnFull(column))
@@ -99,13 +115,13 @@ namespace ConnectFour
                     return;
                 }
                 Bot.SelectMove(CurrentBoard, out column2, out score);
-                CurrentBoard.AddChecker(Toggle(Checker), column2);
+                CurrentBoard.AddChecker(Board.Toggle(Checker), column2);
                 BatchAddCheckers(Checker, new List<int> { column, column2 }, updateBoard:false);
             }
             else
             {
                 AddChecker(Checker, column);
-                Checker = Toggle(Checker);
+                Checker = Board.Toggle(Checker);
             }
 
             if (CurrentBoard.IsGameOver)
@@ -140,15 +156,6 @@ namespace ConnectFour
             Storyboard.SetTarget(fade, image);
             Storyboard.SetTargetProperty(fade, new PropertyPath(Image.OpacityProperty));
             return fade;
-        }
-
- 
-
-
-
-        public Checker Toggle(Checker checker)
-        {
-            return (checker == Checker.Green ? Checker.Blue : Checker.Green);
         }
 
 
@@ -191,7 +198,7 @@ namespace ConnectFour
                 story.Children.Add(fade);
                 story.Completed += new EventHandler(story_Completed);
 
-                checker = Toggle(checker);
+                checker = Board.Toggle(checker);
                 ++i;
             }
             story.Begin();

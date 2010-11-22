@@ -28,6 +28,7 @@ namespace NeuralNet
         Termination _termination;
         public Termination Termination { get { return _termination; } set { _termination = value; if (_termination != null) _termination.Network = this; }}
         public bool IsTrained { get { return Termination.IsNetworkTrained; } }
+        public NetworkTimer TrainTime = new NetworkTimer();
 
 		private Network() { }  
 		public Network(string name, int inputs, int hiddens, int outputs, Termination termination, NetworkParameters parameters = null) : this (name, inputs, new List<int>(){hiddens}, outputs, termination, parameters) {}
@@ -85,6 +86,8 @@ namespace NeuralNet
 
 			if (Termination.IsNetworkTrained)
 				return true;
+
+            TrainTime.Start();
 			for (int i = 0; i < iterations; ++i)
 			{
 				foreach (Example example in examples)
@@ -95,6 +98,8 @@ namespace NeuralNet
 				}
 				Termination.CompleteIteration();
 			}
+            TrainTime.Stop();
+
 			return false;
 		}
 

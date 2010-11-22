@@ -12,21 +12,25 @@ namespace ConnectFour
             return new Board();
         };
 
+        public static Random rand = new Random();
+        /// <summary>
+        /// Chooses random board position.
+        /// </summary>
         public static Func<Board> Random = () =>
         {
-            Random rand = new Random();
             Board board = new Board();
-            int checkers = rand.Next(board.Rows * board.Columns + 1);
-            Checker checker = rand.Next(2) == 0 ? Checker.Blue : Checker.Green;
+            int checkers = rand.Next(board.Rows * board.Columns+1);
+            Checker checker = Checker.Blue;
             int column;
-            for (int i = 0; i < checkers; ++i)
+            for (int i = 0; i < checkers && !board.IsGameOver; ++i)
             {
                 do
                     column = rand.Next(board.Columns);
                 while (board.IsColumnFull(column));
                 board.AddChecker(checker, column);
-                checker = checker == Checker.Green ? Checker.Blue : Checker.Green;
+                checker = Board.Toggle(checker);
             }
+
             return board;
         };
   

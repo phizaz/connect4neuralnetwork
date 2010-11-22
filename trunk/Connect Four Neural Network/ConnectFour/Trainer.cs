@@ -25,6 +25,7 @@ namespace ConnectFour
             {
                 List<Example> trace = Simulator.Play(regimen(), Network);
                 Network.TrainNetwork(trace);
+                gui.Dispatcher.BeginInvoke(new Action<Network>(n => gui.UpdateProgressLabels(n)), gui.Network);
             }
         }
 
