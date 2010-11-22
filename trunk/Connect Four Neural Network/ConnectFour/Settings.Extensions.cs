@@ -47,12 +47,13 @@ namespace ConnectFour.Properties
         {
             get 
             {
+                if (NetworkPaths[Difficulty] == null)
+                    return null;
                 if (Networks[Difficulty] != null)
                     return Networks[Difficulty];
-                else if (NetworkPaths[Difficulty] != null)
+                if (NetworkPaths[Difficulty] != null)
                     return Networks[Difficulty] = (Network)Serializer.Deserialize(CurrentNetworkPath);
-                else
-                    return null;
+                return null;
             }
             set
             {

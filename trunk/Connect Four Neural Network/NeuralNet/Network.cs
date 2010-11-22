@@ -87,7 +87,6 @@ namespace NeuralNet
 			if (Termination.IsNetworkTrained)
 				return true;
 
-            TrainTime.Start();
 			for (int i = 0; i < iterations; ++i)
 			{
 				foreach (Example example in examples)
@@ -98,7 +97,6 @@ namespace NeuralNet
 				}
 				Termination.CompleteIteration();
 			}
-            TrainTime.Stop();
 
 			return false;
 		}

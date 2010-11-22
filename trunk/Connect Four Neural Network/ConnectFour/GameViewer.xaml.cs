@@ -40,11 +40,10 @@ namespace ConnectFour
 
         public Log Log = new Log();
         public Menu Menu = new Menu();
-        Network Network = new Network("default", 6*7, 100, 1, null);
         public GameViewer()
         {
             InitializeComponent();
-            Restart(GameMode.HumanVComputer);
+            Restart(GameMode.HumanVComputer, true);
             Simulator = new Simulator(this);
         }
 
@@ -53,19 +52,26 @@ namespace ConnectFour
             Glass.ExtendGlassFrame(this);
         }
 
-        public void Restart(GameMode mode)
+        public void Restart(GameMode mode, bool startup = false)
         {
             gridBoard.Children.RemoveRange(7, gridBoard.Children.Count - 7); // Don't remove the 7 borders.
             Mode = mode;
             Checker = Checker.Blue;
             CurrentBoard = new Board();
+            if (!startup)
+                GetValidNetwork(); // Assert valid current network.
+        }
 
-            if (mode == GameMode.HumanVComputer || mode == GameMode.ComputerVComputer)
-                if (Settings.Default.CurrentNetwork == null)
-                {
-                    MessageBox.Show("Current network path is null or invalid.\r\nLoad a new network in settings.");
-                    Menu.UpdateNetworkPathLabel();
-                }
+        public Network GetValidNetwork()
+        {
+                if (Mode == GameMode.HumanVComputer || Mode == GameMode.ComputerVComputer)
+                    if (Settings.Default.CurrentNetwork == null)
+                    {
+                        MessageBox.Show("Current network path is null or invalid.\r\nLoad a new network in settings.");
+                        Menu.UpdateNetworkPathLabel();
+                        return null;
+                    }
+                return Settings.Default.CurrentNetwork;
         }
 
         private void HumanVHuman_MouseUp(object sender, MouseButtonEventArgs e)
@@ -83,7 +89,7 @@ namespace ConnectFour
         {
             Restart(GameMode.ComputerVComputer);
             if (Settings.Default.CurrentNetwork != null)
-                Simulator.Play(TrainingRegimen.Random(), Settings.Default.CurrentNetwork);
+                Simulator.Play(TrainingRegimen.Blank(), Settings.Default.CurrentNetwork);
         }
 
         private Checker Checker = Checker.Blue;
@@ -92,12 +98,12 @@ namespace ConnectFour
             if (CurrentBoard.IsGameOver)
                 return;
 
-            if (Mode == GameMode.HumanVComputer)
-            {
-                if (Settings.Default.CurrentNetwork == null)
-                    return;
-                Bot = new NeuralNetBot(Checker.Green, Settings.Default.CurrentNetwork);
-            }
+            Network network = GetValidNetwork();
+            if (network != null)
+                Bot = new NeuralNetBot(Checker.Green, network);
+            else if (Mode != GameMode.HumanVHuman)
+                return;
+
 
             int column = (int)(sender as Border).GetValue(Grid.ColumnProperty);
             if (IsColumnFull(column))

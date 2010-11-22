@@ -60,7 +60,7 @@ namespace ConnectFour
         public void EnableAllControls(bool enable = true)
         {
             tbName.IsEnabled = tbInputs.IsEnabled = tbHiddens.IsEnabled = tbOutputs.IsEnabled = tbLearningRate.IsEnabled = tbMomentum.IsEnabled = tbInitialWeightMin.IsEnabled = tbInitialWeightMax.IsEnabled = cbTerminationType.IsEnabled = tbIterations.IsEnabled = tbValidateCycle.IsEnabled = btnStart.IsEnabled = enable;
-            if (IsEnabled)
+            if (enable)
             {
                 tbIterations.IsEnabled = cbTerminationType.SelectedIndex == 1;
                 tbValidateCycle.IsEnabled = cbTerminationType.SelectedIndex == 0;
@@ -129,7 +129,7 @@ namespace ConnectFour
 
         public void UpdateProgressLabels(Network network)
         {
-            lbError.Content = (!network.TrueError.HasValue ? "0" : String.Format("{0:f3}", network.TrueError.Value).ToString());
+            lbError.Content = (!network.TrueError.HasValue ? "0" : String.Format("{0:f5}", network.TrueError.Value).ToString());
             lbIteration.Content = network.Termination.CurrentIteration;
             lbTimeElapsed.Content = network.TrainTime.Elapsed.ToString(@"d\.hh\:mm\:ss");
         }
@@ -222,7 +222,7 @@ namespace ConnectFour
                 };
 
                 string name = ToString(tbName, s => s.Trim() != string.Empty, "Network name cannot be empty.");
-                if (Network == null && Directory.Exists(name))
+                if (Status == TrainStatus.Create && Directory.Exists(name))
                 {
                     if (MessageBox.Show("Neural Net folder '" + name + "' already exists. Delete contents?\r\nIf not, use a unique name.", "Error", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                         (new DirectoryInfo(name)).Delete(true);
@@ -231,7 +231,7 @@ namespace ConnectFour
                 }
 
 
-                if (Network == null)
+                if (Status == TrainStatus.Create)
                 {
                     Network = new Network(
                         name,
@@ -251,7 +251,7 @@ namespace ConnectFour
                     Network.Name = name;
                 }
 
-                Status = TrainStatus.Running;;
+                Status = TrainStatus.Running;
                 Thread = new Thread(new ThreadStart(DoTrain)) { IsBackground = true };
                 Thread.Start();
             }
@@ -264,8 +264,8 @@ namespace ConnectFour
 
         void DoTrain()
         {
-            Trainer = new Trainer(Network, this);
-            Trainer.Train(TrainingRegimen.Random);
+            Trainer = new Trainer(this);
+            Trainer.Train(TrainingRegimen.Blank);
         }
         
         public int ToInt(TextBox tb, Func<int, bool> func = null, string errorMessage=null)
