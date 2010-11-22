@@ -159,5 +159,28 @@ namespace ConnectFour
                 return true;
             }
 		}
+
+		public bool isValidCoords(int row, int column)
+		{
+			return row >= 0 && column >= 0 &&
+				row < Rows && column < Columns;
+		}
+
+		public string ToStringNormalized(Checker myColor)
+		{
+			string str = string.Empty;
+			for (int row = 0; row < Rows; row++)
+			{
+				if (row > 0)
+					str += "\r\n";
+				for (int col = 0; col < Columns; col++)
+				{
+					str += Cells[row,col] == myColor ? "x" :
+						Cells[row,col] == Checker.Empty ? "-" :
+						"o";
+				}
+			}
+			return str;
+		}
 	}
 }
