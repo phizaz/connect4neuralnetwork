@@ -45,7 +45,7 @@ namespace ConnectFour
                     case TrainStatus.Create: btnStart.Content = "Start"; EnableAllControls();  break;
                     case TrainStatus.Running: btnStart.Content = "Pause"; EnableAllControls(false); btnStart.IsEnabled = true; break;
                     case TrainStatus.Paused: btnStart.Content = "Resume"; EnableAllControls(); DisableInitialControls(); break;
-                    case TrainStatus.Finished: btnStart.Content = "Done"; EnableAllControls(false); DisableInitialControls(); break;
+                    case TrainStatus.Finished: btnStart.Content = "Done"; EnableAllControls(); DisableInitialControls(); break;
                 }
                 lbStatus.Content = value.ToString();
                 _status = value;
@@ -60,6 +60,11 @@ namespace ConnectFour
         public void EnableAllControls(bool enable = true)
         {
             tbName.IsEnabled = tbInputs.IsEnabled = tbHiddens.IsEnabled = tbOutputs.IsEnabled = tbLearningRate.IsEnabled = tbMomentum.IsEnabled = tbInitialWeightMin.IsEnabled = tbInitialWeightMax.IsEnabled = cbTerminationType.IsEnabled = tbIterations.IsEnabled = tbValidateCycle.IsEnabled = btnStart.IsEnabled = enable;
+            if (IsEnabled)
+            {
+                tbIterations.IsEnabled = cbTerminationType.SelectedIndex == 1;
+                tbValidateCycle.IsEnabled = cbTerminationType.SelectedIndex == 0;
+            }
         }
 
         public void DisableInitialControls()
@@ -79,6 +84,8 @@ namespace ConnectFour
 
         public void New()
         {
+            Save();
+
             tbName.Text = "";
             tbInputs.Text = "42";
             tbHiddens.Text = "100";
@@ -96,6 +103,7 @@ namespace ConnectFour
             ValidationPlot.Collection.Clear();
             TrainingPlot.Collection.Clear();
             Status = TrainStatus.Create;
+            lbError.Content = lbIteration.Content = lbTimeElapsed.Content = "0";
         }
 
 
@@ -116,8 +124,15 @@ namespace ConnectFour
             tbValidateCycle.Text = network.Termination.ValidateCycle.ToString();
             ValidationPlot.Collection.Clear();
             TrainingPlot.Collection.Clear();
+            UpdateProgressLabels(network);
         }
 
+        public void UpdateProgressLabels(Network network)
+        {
+            lbError.Content = (!network.TrueError.HasValue ? "0" : String.Format("{0:f3}", network.TrueError.Value).ToString());
+            lbIteration.Content = network.Termination.CurrentIteration;
+            lbTimeElapsed.Content = network.TrainTime.Elapsed.ToString(@"d\.hh\:mm\:ss");
+        }
 
         public void AddValidationError(int iteration, double error)
         {
@@ -142,8 +157,11 @@ namespace ConnectFour
 
         private void btnLoad_Click(object sender, RoutedEventArgs e)
         {
+            Save();
+
             Microsoft.Win32.OpenFileDialog open = new Microsoft.Win32.OpenFileDialog();
             open.Filter = "Neural Network|*.net";
+            open.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
             if (open.ShowDialog().Value)
             {
                 try
@@ -154,6 +172,23 @@ namespace ConnectFour
                 }
                 catch { MessageBox.Show("Could not deserialize " + open.FileName.ToString(), "Error"); }
             }
+        }
+
+        public void Save()
+        {
+            if (Status == TrainStatus.Create || Network == null)
+                return;
+
+            if (Status == TrainStatus.Running)
+                Status = TrainStatus.Paused;
+            if (Thread != null && Thread.IsAlive)
+                Thread.Join(); // Wait for training thread to finish current training iteration to obtain most up to date network (to save/serialize). 
+
+            string name = tbName.Text.Trim();
+            if (!Directory.Exists(name))
+                Directory.CreateDirectory(name);
+
+            Serializer.Serialize(Network, System.IO.Path.Combine(name, name + "_current.net"));
         }
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
@@ -189,7 +224,7 @@ namespace ConnectFour
                 string name = ToString(tbName, s => s.Trim() != string.Empty, "Network name cannot be empty.");
                 if (Network == null && Directory.Exists(name))
                 {
-                    if (MessageBox.Show("Neural Net folder already exists. Delete contents?\r\nIf not, use a unique name.", "Error", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                    if (MessageBox.Show("Neural Net folder '" + name + "' already exists. Delete contents?\r\nIf not, use a unique name.", "Error", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                         (new DirectoryInfo(name)).Delete(true);
                     else
                         return;
@@ -230,7 +265,7 @@ namespace ConnectFour
         void DoTrain()
         {
             Trainer = new Trainer(Network, this);
-            Trainer.Train(TrainingRegimen.Empty);
+            Trainer.Train(TrainingRegimen.Random);
         }
         
         public int ToInt(TextBox tb, Func<int, bool> func = null, string errorMessage=null)
@@ -262,6 +297,13 @@ namespace ConnectFour
                 throw new Exception(errorMessage ?? "Invalid value: " + tb.Name + " " + tb.Text);
             return tb.Text.Trim();
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Save();
+        }
+
+
 
     }
 }

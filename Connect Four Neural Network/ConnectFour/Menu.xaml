@@ -11,7 +11,7 @@
         <Label Content="Move Delay" Height="28" HorizontalAlignment="Left" Margin="43,16,0,0" Name="label5" VerticalAlignment="Top" />
         <Slider AutoToolTipPlacement="TopLeft" Height="23" HorizontalAlignment="Left" LargeChange="50" Margin="122,84,0,0" Maximum="2000" Name="sliderDropSpeed" SmallChange="10" TickPlacement="None" VerticalAlignment="Top" Width="100" ValueChanged="sliderDropSpeed_ValueChanged" />
         <Label Content="Drop Speed" Height="28" HorizontalAlignment="Left" Margin="44,84,0,0" Name="label6" VerticalAlignment="Top" />
-        <Button Content="X" Name="btnDefault" ToolTip="Load default settings/networks." FontSize="8" FontWeight="Bold" Click="btnDefault_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="14" />
+        <Button Content="X" Name="btnDefault" ToolTip="Load default settings." FontSize="8" FontWeight="Bold" Click="btnDefault_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="14" />
 
         <Border BorderThickness="0" HorizontalAlignment="Center" Name="border1" VerticalAlignment="Bottom" Width="199" Background="#0EFFFFFF" CornerRadius="10" Margin="0,0,0,15" Height="69">
             <Grid>

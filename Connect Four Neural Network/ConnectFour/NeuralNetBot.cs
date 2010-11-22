@@ -12,7 +12,7 @@ namespace ConnectFour
 	[Serializable]
 	public class NeuralNetBot : Bot
 	{
-		Network Network;
+		public Network Network;
 
 		public NeuralNetBot(Checker myColor, Network network) : base(myColor)
 		{

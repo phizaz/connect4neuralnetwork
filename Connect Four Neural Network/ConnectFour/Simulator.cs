@@ -7,7 +7,7 @@ using ConnectFour.Properties;
 
 namespace ConnectFour
 {
-    class Simulator
+    public class Simulator
     {
         int TotalGames, JasonWon, AllenWon, Ties, Turns, TotalTurns;
         GameViewer Viewer { get; set; }
@@ -17,19 +17,6 @@ namespace ConnectFour
             Viewer = viewer;
         }
 
-
-
-        Checker NextPlayer(Board board)
-        {
-            int numBlue=0, numGreen=0;
-            for (int i = 0; i < board.Rows; ++i)
-                for (int j = 0; j < board.Columns; ++j)
-                    if (board[i, j] == Checker.Blue)
-                        ++numBlue;
-                    else if (board[i, j] == Checker.Green)
-                        ++numGreen;
-            return (numBlue > numGreen ? Checker.Green : Checker.Blue);
-        }
 
         /// <summary>
         /// Simulate a game until completion.
@@ -50,7 +37,7 @@ namespace ConnectFour
             List<Example> trace = new List<Example>();
 
             Turns = 0;
-            Bot current = allen.MyColor == NextPlayer(board) ? allen : jason;
+            Bot current = allen.MyColor == board.NextPlayer ? allen : jason;
             while (!board.IsGameOver)
             {
                 int column;
@@ -68,15 +55,15 @@ namespace ConnectFour
             }
 
             if (Viewer != null)
-                Viewer.BatchAddCheckers(allen.MyColor, board.MoveHistory,completedBoard:board);
+                Viewer.BatchAddCheckers(Checker.Blue, board.MoveHistory,completedBoard:board);
 
             TotalTurns += Turns;
 
             Checker winner;
             if (board.TryGetWinner(out winner))
             {
-                trace[trace.Count - 1].Predictions[0] = Transform.ToValue(GameResult.Win);
-                trace[trace.Count - 2].Predictions[0] = Transform.ToValue(GameResult.Loss);
+                if (trace.Count > 0) trace[trace.Count - 1].Predictions[0] = Transform.ToValue(GameResult.Win); 
+                if (trace.Count > 1) trace[trace.Count - 2].Predictions[0] = Transform.ToValue(GameResult.Loss);
                 if (winner == allen.MyColor)
                 {
                     Log("WINNER:  Allen");
@@ -90,7 +77,8 @@ namespace ConnectFour
             }
             else
             {
-                trace[trace.Count - 1].Predictions[0] = trace[trace.Count - 2].Predictions[0] = Transform.ToValue(GameResult.Draw);
+                if (trace.Count > 0) trace[trace.Count - 1].Predictions[0] = Transform.ToValue(GameResult.Draw);  
+                if (trace.Count > 1) trace[trace.Count - 2].Predictions[0] = Transform.ToValue(GameResult.Draw);
                 Log("TIE");
                 ++Ties;
             }
@@ -105,8 +93,9 @@ namespace ConnectFour
             {
                 trace[i].Labels = trace[i + 2].Predictions; 
             }
-            trace[trace.Count - 2].Labels = trace[trace.Count - 2].Predictions;
-            trace[trace.Count - 1].Labels = trace[trace.Count - 1].Predictions;
+
+            if (trace.Count > 0) trace[trace.Count - 1].Labels = trace[trace.Count - 1].Predictions;
+            if (trace.Count > 1) trace[trace.Count - 2].Labels = trace[trace.Count - 2].Predictions;
 
             return trace;
         }

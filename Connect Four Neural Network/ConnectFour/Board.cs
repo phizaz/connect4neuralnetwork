@@ -39,8 +39,7 @@ namespace ConnectFour
 			Debug.Assert(column >= 0 && column < Columns);
 			if (IsColumnFull(column))
 			{
-				//this column already filled
-				//TODO- throw an exception
+                throw new Exception("Column already filled!");
 			}
 			else
 			{
@@ -159,6 +158,26 @@ namespace ConnectFour
                 return true;
             }
 		}
+
+        public Checker NextPlayer
+        {
+            get
+            {
+                int numBlue = 0, numGreen = 0;
+                for (int i = 0; i < Rows; ++i)
+                    for (int j = 0; j < Columns; ++j)
+                        if (Cells[i, j] == Checker.Blue)
+                            ++numBlue;
+                        else if (Cells[i, j] == Checker.Green)
+                            ++numGreen;
+                return (numBlue > numGreen ? Checker.Green : Checker.Blue);
+            }
+        }
+
+        public static Checker Toggle(Checker c)
+        {
+            return c == Checker.Green ? Checker.Blue : Checker.Green;
+        }
 
 		public bool isValidCoords(int row, int column)
 		{

@@ -54,27 +54,6 @@ namespace ConnectFour
             Debug.Assert(lastPlayerToGo != Checker.Empty);
             return new Example(board.Cells.Cast<Checker>().Select(c=>Transform.ToNormalizedValue(c, lastPlayerToGo)).ToList());
         }
-
-
-        /// <summary>
-        /// Verifies that some old transformer is equivalent to the current transformer function.
-        /// </summary>
-        /// <param name="check">Function to check validity of</param>
-        public static bool Verify<T>(Func<T, double> check)
-        {
-            dynamic correct;
-            if (typeof(T) == typeof(Checker))
-                correct = (Func<Checker,double>) ToValue;
-            else if (typeof(T) == typeof(GameResult))
-                correct = (Func<GameResult,double>) ToValue;
-            else
-                throw new Exception();
-            foreach (T val in Enum.GetValues(typeof(T)))
-            {
-                if (check(val) != correct(val))
-                    return false;
-            }
-            return true;
-        }
+  
     }
 }
