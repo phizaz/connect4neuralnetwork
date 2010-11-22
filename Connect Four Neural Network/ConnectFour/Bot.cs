@@ -30,6 +30,8 @@ namespace ConnectFour
 
 		public void SelectMove(Board board, out int column, out double score)
 		{
+            int bestX = 0;
+
 			double[] columnEvaluations = new double[board.Columns];
 			double bestV = Double.NegativeInfinity;
 			for (int x = 0; x < board.Columns; x++)
@@ -42,6 +44,7 @@ namespace ConnectFour
 					if (v > bestV)
 					{
 						bestV = v;
+                        bestX = x;
 					}
 					columnEvaluations[x] = v;
 				}

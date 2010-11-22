@@ -71,7 +71,7 @@
             <Grid HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="82" Height="49" Grid.Row="1" Margin="0,0,2,0">
             <Label Content="Error" Name="label19" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Top" Height="23" Width="37" Margin="3,5,0,0" />
             <Label Name ="lbStatus" Content="Status" FontSize="10" Margin="29,-5,0,0" FontWeight="Bold" HorizontalAlignment="Left" Width="70" Height="28" VerticalAlignment="Top" />
-            <Label Name="lbError" Content="0" FontSize="10" FontWeight="Bold" Height="23" Margin="29,5,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="41" />
+            <Label Name="lbError" Content="0" FontSize="10" FontWeight="Bold" Height="23" Margin="29,5,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="96" />
             <Label Content="Status" Name="label18" FontSize="10" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="37" Margin="-2,-5,0,0" />
             <Label Content="Time" FontSize="10" Height="23" HorizontalAlignment="Left" Margin="3,15,0,0" Name="label21" VerticalAlignment="Top" Width="31" />
             <Label Content="0" FontSize="10" FontWeight="Bold" Height="23" HorizontalAlignment="Left" Margin="29,15,0,0" Name="lbTimeElapsed" VerticalAlignment="Top" Width="116" />

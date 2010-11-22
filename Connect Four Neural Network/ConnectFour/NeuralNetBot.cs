@@ -17,6 +17,7 @@ namespace ConnectFour
 		public NeuralNetBot(Checker myColor, Network network) : base(myColor)
 		{
 			Network = network;
+            Lambda = -1;
 		}
 
 		protected override double EvaluateBoard(Board board)

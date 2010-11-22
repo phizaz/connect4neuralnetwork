@@ -46,36 +46,6 @@ namespace ConnectFour
             btnClear.Visibility = Settings.Default.CurrentNetworkPath != null ? Visibility.Visible : Visibility.Hidden;
         }
 
-
-        private void btnDefault_Click(object sender, RoutedEventArgs e)
-        {
-            var paths = Settings.Default.NetworkPathsRaw;
-            var difficulty = Settings.Default.Difficulty;
-            Settings.Default.Reset();
-            Settings.Default.NetworkPathsRaw = paths;
-            Settings.Default.Difficulty = difficulty;
-            PopulateControls();
-        }
-
-        private void btnCreateNetwork_Click(object sender, RoutedEventArgs e)
-        {
-            (new NetworkGenerator()).Show();
-        }
-
-        private void btnLoadNetwork_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog open = new OpenFileDialog();
-            open.Filter = "Neural Network|*.net";
-            open.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            if (open.ShowDialog().Value)
-            {
-                Settings.Default.CurrentNetworkPath = open.FileName.Replace(AppDomain.CurrentDomain.BaseDirectory,""); // If network originates in application folder, then make it relative location.  
-                Settings.Default.CurrentNetwork = null;
-                UpdateNetworkPathLabel();
-            }
-
-        }
-
         bool forceClose = false;
         public void ForceClose()
         {
@@ -131,10 +101,38 @@ namespace ConnectFour
         private void btnClearPath_MouseUp(object sender, MouseButtonEventArgs e)
         {
             Settings.Default.CurrentNetworkPath = null;
+            Settings.Default.CurrentNetwork = null;
             UpdateNetworkPathLabel();
         }
 
+        private void btnDefault_Click(object sender, RoutedEventArgs e)
+        {
+            var paths = Settings.Default.NetworkPathsRaw;
+            var difficulty = Settings.Default.Difficulty;
+            Settings.Default.Reset();
+            Settings.Default.NetworkPathsRaw = paths;
+            Settings.Default.Difficulty = difficulty;
+            PopulateControls();
+        }
 
+        private void btnCreateNetwork_Click(object sender, RoutedEventArgs e)
+        {
+            (new NetworkGenerator()).Show();
+        }
+
+        private void btnLoadNetwork_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog open = new OpenFileDialog();
+            open.Filter = "Neural Network|*.net";
+            open.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            if (open.ShowDialog().Value)
+            {
+                Settings.Default.CurrentNetworkPath = open.FileName.Replace(AppDomain.CurrentDomain.BaseDirectory,""); // If network originates in application folder, then make it relative location.  
+                Settings.Default.CurrentNetwork = null;
+                UpdateNetworkPathLabel();
+            }
+
+        }
 
 
         #endregion

@@ -7,7 +7,7 @@ namespace ConnectFour
 {
     public static class TrainingRegimen
     {
-        public static Func<Board> Empty = () =>
+        public static Func<Board> Blank = () =>
         {
             return new Board();
         };
