@@ -18,6 +18,12 @@ namespace ConnectFour
 		public KnnBot(Checker myColor) : base(myColor)
 		{
 			learner = new KNearestNeighbor(5, 1000);
+
+			// this learner needs to have at least one example
+			// to start with
+			Example e = MakeExample(new Board(), Checker.Blue);
+			e.Labels.Add(0.5);
+			LearnOneExample(e);
 		}
 
 		protected override double EvaluateBoard(Board board)
