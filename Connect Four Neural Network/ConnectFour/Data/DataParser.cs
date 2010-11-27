@@ -35,10 +35,7 @@ namespace ConnectFour
                 {
                     string[] values = line.Split(',');
 
-                    Example example = new Example();
-                    for (int i = 0; i < values.Length - 1; ++i)
-                        example.Features.Add(0);
-
+                    Board board = new Board();
                     for (int i = 0; i < values.Length - 1; ++i)
                     {
                         string x = values[i].ToLower().Trim();
@@ -53,8 +50,15 @@ namespace ConnectFour
                         // Need to convert to our format of: Left to right, top to bottom.
                         int row = 5 - i % 6;
                         int column = i / 6;
-                        example.Features[row * 7 + column] = Transform.ToValue(checker);
+                        board.Cells[row, column] = checker;
                     }
+
+                    // In connect-4.txt, it is X's turn to go next, which means
+                    // player O has just went. Player O == Green, therefore
+                    // we use Checker.Green in the following line.
+
+                    Example example = Transform.ToNormalizedExample(board, Checker.Green);
+
                     string result = values[values.Length - 1].ToLower().Trim();
 
                     // Current values denote next player that goes will be guaranteed to win/lose/draw given he/she plays optimally...  
