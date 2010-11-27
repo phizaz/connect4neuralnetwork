@@ -63,8 +63,11 @@ namespace ConnectFour
 
                     // Current values denote next player that goes will be guaranteed to win/lose/draw given he/she plays optimally...  
                     //  We need to normalize this for our network... Ie, the label should instead denote if last player that went for given board position win/loses/ties if he/she plays optimally.
-                    result = result == "win" ? "Loss" : result == "loss" ? "Win" : "Draw";
-                    example.Labels.Add(Transform.ToValue((GameResult)Enum.Parse(typeof(GameResult), result)));
+                    GameResult gr =
+                            result == "win" ? GameResult.Loss :
+                            result == "loss" ? GameResult.Win :
+                            GameResult.Draw;
+                    example.Labels.Add(Transform.ToValue(gr));
                     ValidationSet.Add(example);
                 }
             }
