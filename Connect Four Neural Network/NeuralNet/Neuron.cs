@@ -74,7 +74,7 @@ namespace NeuralNet
 		{
 			for (int i = 0; i < Downstream.Count; ++i)
 			{
-				WeightChange[i].Value = learningRate * Downstream[i].ErrorTerm * Downstream[i].Value + momentum * WeightChange[i].Value;
+				WeightChange[i].Value = learningRate * Downstream[i].ErrorTerm * this.Value + momentum * WeightChange[i].Value;
 				DownstreamWeights[i].Value += WeightChange[i].Value;
 			}
 		}
