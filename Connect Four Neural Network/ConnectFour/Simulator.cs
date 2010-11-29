@@ -62,6 +62,11 @@ namespace ConnectFour
             Checker winner;
             if (board.TryGetWinner(out winner))
             {
+		//The game is over, there was a winner.
+		//This means the last element of "trace" represents a won
+		//board state (i.e. there is a four-in-a-row with color
+		//'winner').
+
                 if (trace.Count > 0) trace[trace.Count - 1].Predictions[0] = Transform.ToValue(GameResult.Win); 
                 if (trace.Count > 1) trace[trace.Count - 2].Predictions[0] = Transform.ToValue(GameResult.Loss);
                 if (winner == allen.MyColor)
