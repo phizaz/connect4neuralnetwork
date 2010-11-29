@@ -30,7 +30,7 @@ namespace ConnectFour
 
 		public void SelectMove(Board board, out int column, out double score)
 		{
-            int bestX = 0;
+			int bestX = 0;
 
 			double[] columnEvaluations = new double[board.Columns];
 			double bestV = Double.NegativeInfinity;
@@ -44,7 +44,7 @@ namespace ConnectFour
 					if (v > bestV)
 					{
 						bestV = v;
-                        bestX = x;
+						bestX = x;
 					}
 					columnEvaluations[x] = v;
 				}
@@ -62,10 +62,17 @@ namespace ConnectFour
 			//probability, even if they had different scores
 
 			//low values of Lambda will have the opposite effect
-			//Lambda should be positive number
 
-			Lambda = Math.Max(Lambda, 0.00001);
-			Lambda = Math.Min(Lambda, 10000);
+			//Lambda should be positive number.
+			//Otherwise, no exploration will take place.
+			//If non-positive, just return the "best" move now,
+			//to avoid divide-by-zero type issues.
+			if (Lambda <= 0)
+			{
+				column = bestX;
+				score = bestV;
+				return;
+			}
 
 			double sum = 0.0;
 			double[] weights = new double[columnEvaluations.Length];
