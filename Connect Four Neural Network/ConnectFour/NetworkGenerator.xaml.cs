@@ -162,6 +162,7 @@ namespace ConnectFour
             Microsoft.Win32.OpenFileDialog open = new Microsoft.Win32.OpenFileDialog();
             open.Filter = "Neural Network|*.net";
             open.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            open.RestoreDirectory = true;
             if (open.ShowDialog().Value)
             {
                 try
