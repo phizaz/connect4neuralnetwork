@@ -218,7 +218,7 @@ namespace ConnectFour
                     InitialWeightInterval = new Tuple<double, double>(ToDouble(tbInitialWeightMin), ToDouble(tbInitialWeightMax)),
                     LearningRate = ToDouble(tbLearningRate, x => x > 0, "Learning rate must be > 0"),
                     LearningRateDecay = ToDouble(tbLearningRateDecay),
-                    Momentum = ToDouble(tbMomentum),
+                    Momentum = ToDouble(tbMomentum, x => x >= 0 && x < 1, "Momentum must be in [0,1)"),
                     MomentumDecay = ToDouble(tbMomentumDecay)
                 };
 

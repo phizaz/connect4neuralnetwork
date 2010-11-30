@@ -27,8 +27,8 @@ namespace ConnectFour
         {
             switch (result)
             {
-                case GameResult.Loss: return 0.0;
-                case GameResult.Win: return 1.0;
+                case GameResult.Loss: return 0.1;
+                case GameResult.Win: return .9;
                 case GameResult.Draw: return 0.5;
                 default: throw new Exception();
             }

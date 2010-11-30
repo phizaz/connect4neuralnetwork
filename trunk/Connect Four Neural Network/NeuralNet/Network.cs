@@ -73,13 +73,6 @@ namespace NeuralNet
         /// <param name="examples">Set of examples.  Make sure features and labels lists are populated before training.</param>
         /// <param name="iterations">Number of iterations to train on the given set of examples</param>
         /// <returns>True if network is fully trained.  False otherwise.  (Based on Termination object given in constructor)</returns>
-		public void LearnOneExample(Example example)
-		{
-			PropogateInput(example);
-			PropogateErrors(example);
-			UpdateWeights();
-		}
-
 		public bool TrainNetwork(List<Example> examples, int iterations = 1)
 		{
             AssertValidForTraining(examples);
@@ -101,6 +94,13 @@ namespace NeuralNet
 			return false;
 		}
 
+		public void LearnOneExample(Example example)
+		{
+			PropogateInput(example);
+			PropogateErrors(example);
+			UpdateWeights();
+		}
+
         /// <summary>
         /// Propogates input through network (FeedForward).  Updates example.predictions.
         /// </summary>
@@ -116,6 +116,11 @@ namespace NeuralNet
                 neuron.Value = example.Features[feature++];
                 neuron.Fed = true;
             }
+            foreach (Neuron neuron in Constants)
+            {
+                neuron.Value = 1;
+                neuron.Fed = true;
+            }
             foreach (Neuron neuron in Neurons)
                 recur_FeedForward(neuron);
 
@@ -129,7 +134,7 @@ namespace NeuralNet
 
 			foreach (Neuron n in neuron.Upstream)
 				recur_FeedForward(n);
-			neuron.UpdateOutputValue(); // Safe to call since all upstream values have been updated.
+			neuron.UpdateOutputValue(); // Safe to call since all upstream values have been updated.  *Note* Only Hidden and Output units' values are adjusted. Constants and Inputs units are left untouched.
 			neuron.Fed = true;
 		}
 
