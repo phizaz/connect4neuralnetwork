@@ -51,11 +51,10 @@ namespace NeuralNet
                 double error = Validate();
                 if (error < SnapshotError)
                 {
-                    // The below is probably horribly inefficient.... what can we do to make it faster?
+                    SnapshotError = error;
                     Network.TrueError = error;
                     if (!Directory.Exists(Network.Name))
                         Directory.CreateDirectory(Network.Name);
-                    //Snapshot = null; // Sever links of more than 1 snapshot back.  
                     Snapshot = Path.Combine(Network.Name, Network.Name + "_" + error.ToString()) + ".net";
                     Serializer.Serialize(Network, Snapshot);
                 }

@@ -72,6 +72,9 @@ namespace NeuralNet
 		/// </summary>
 		public void UpdateDownstreamWeights(double learningRate, double momentum)
 		{
+            Debug.Assert(momentum >= 0 && momentum < 1); // Per book, pg100.  
+            Debug.Assert(learningRate > 0); // Per common sense.
+
 			for (int i = 0; i < Downstream.Count; ++i)
 			{
 				WeightChange[i].Value = learningRate * Downstream[i].ErrorTerm * this.Value + momentum * WeightChange[i].Value;

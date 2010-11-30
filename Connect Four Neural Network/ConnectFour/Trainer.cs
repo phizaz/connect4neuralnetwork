@@ -10,23 +10,30 @@ namespace ConnectFour
     {
         Simulator Simulator = new Simulator();
         NetworkGenerator gui;
+        Network Network;
 
         private Trainer(){}
         public Trainer(NetworkGenerator gui)
         {
             this.gui = gui;
+            Network = gui.Network;
+        }
+        public Trainer(Network network)
+        {
+            Network = network;
         }
 
         public void Train(Func<Board> regimen)
         {
-            gui.Network.TrainTime.Start();
-            while (!gui.Network.IsTrained && gui.Status != TrainStatus.Paused)
+            Network.TrainTime.Start();
+            while (!Network.IsTrained && (gui == null || gui.Status != TrainStatus.Paused))
             {
-                List<Example> trace = Simulator.Play(regimen(), gui.Network);
-                gui.Network.TrainNetwork(trace);
-                gui.Dispatcher.BeginInvoke(new Action<Network>(n => gui.UpdateProgressLabels(n)), gui.Network);
+                List<Example> trace = Simulator.Play(regimen(), Network);
+                Network.TrainNetwork(trace);
+                if (gui != null) 
+                    gui.Dispatcher.BeginInvoke(new Action<Network>(n => gui.UpdateProgressLabels(n)), Network);
             }
-            gui.Network.TrainTime.Stop();
+            Network.TrainTime.Stop();
         }
 
     }

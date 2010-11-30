@@ -24,13 +24,8 @@ namespace ConnectFour
         /// <param name="board">Starting board that the bots will play on.  This need not be empty!</param>
         /// <param name="network">Neural network that provides the AI for gameplay.</param>
         /// <returns>Trace of game sequence, each board state stored as a Neural Net Example</returns>
-        public List<Example> Play(Board board = null, Network network = null)
+        public List<Example> Play(Board board, Network network)
         {
-            if (board == null)
-                board = new Board();
-            if (network == null)
-                network = new Network("default", board.Rows * board.Columns, 100, 1, null);
-
             Bot allen = new NeuralNetBot(Checker.Blue, network); // <-- you know he will win :)
             Bot jason = new NeuralNetBot(Checker.Green, network);
 
