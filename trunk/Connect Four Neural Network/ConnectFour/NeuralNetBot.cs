@@ -14,7 +14,7 @@ namespace ConnectFour
 	{
 		public Network Network;
 
-		public NeuralNetBot(Checker myColor, Network network) : base(myColor)
+		public NeuralNetBot(Checker myColor, Network network, double? lambda=null) : base(myColor, lambda)
 		{
 			Network = network;
 		}

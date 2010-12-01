@@ -16,11 +16,11 @@ namespace ConnectFour
 		public double Lambda;
 		static Random RANDOM = new Random();
 
-		protected Bot(Checker myColor)
+		protected Bot(Checker myColor, double? lambda = null)
 		{
             Debug.Assert(myColor != Checker.Empty);
 			MyColor = myColor;
-			Lambda = 0.01;
+            Lambda = lambda ?? 0.01; 
 		}
 
 		protected abstract double EvaluateBoard(Board board);
