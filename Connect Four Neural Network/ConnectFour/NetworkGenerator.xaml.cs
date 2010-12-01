@@ -32,6 +32,7 @@ namespace ConnectFour
         private ObservableDataSource<Point> TrainingPlot = new ObservableDataSource<Point>();
         public Network Network;
         public Trainer Trainer;
+        public int CurrentErrorHistoryIndex = 0;
         Thread Thread;
 
         private TrainStatus _status = TrainStatus.Create;
@@ -42,7 +43,7 @@ namespace ConnectFour
             {
                 switch (value)
                 {
-                    case TrainStatus.Create: btnStart.Content = "Start"; EnableAllControls();  break;
+                    case TrainStatus.Create: btnStart.Content = "Start"; EnableAllControls(); break;
                     case TrainStatus.Running: btnStart.Content = "Pause"; EnableAllControls(false); btnStart.IsEnabled = true; break;
                     case TrainStatus.Paused: btnStart.Content = "Resume"; EnableAllControls(); DisableInitialControls(); break;
                     case TrainStatus.Finished: btnStart.Content = "Done"; EnableAllControls(); DisableInitialControls(); break;
@@ -75,8 +76,8 @@ namespace ConnectFour
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Glass.ExtendGlassFrame(this);
-            //Validation.SetXYMapping(p => p);
-            //Training.SetXYMapping(p => p);
+            ValidationPlot.SetXYMapping(p => p);
+            TrainingPlot.SetXYMapping(p => p);
             plotter.AddLineGraph(ValidationPlot, new Pen(Brushes.DarkBlue, 2.0), new PenDescription("Validation Error"));
             plotter.AddLineGraph(TrainingPlot, new Pen(Brushes.DarkGreen, 2.0), new PenDescription("Training Error"));
             New();
@@ -102,6 +103,7 @@ namespace ConnectFour
             tbValidateCycle.Text = "500";
             ValidationPlot.Collection.Clear();
             TrainingPlot.Collection.Clear();
+            CurrentErrorHistoryIndex = 0;
             Status = TrainStatus.Create;
             lbError.Content = lbIteration.Content = lbTimeElapsed.Content = "0";
         }
@@ -124,24 +126,19 @@ namespace ConnectFour
             tbValidateCycle.Text = network.Termination.ValidateCycle.ToString();
             ValidationPlot.Collection.Clear();
             TrainingPlot.Collection.Clear();
-            UpdateProgressLabels(network);
+            UpdateProgress(network);
         }
 
-        public void UpdateProgressLabels(Network network)
+        public void UpdateProgress(Network network)
         {
             lbError.Content = (!network.TrueError.HasValue ? "0" : String.Format("{0:f5}", network.TrueError.Value).ToString());
             lbIteration.Content = network.Termination.CurrentIteration;
             lbTimeElapsed.Content = network.TrainTime.Elapsed.ToString(@"d\.hh\:mm\:ss");
-        }
 
-        public void AddValidationError(int iteration, double error)
-        {
-            ValidationPlot.AppendAsync(this.Dispatcher, new Point(iteration, error));
-        }
-
-        public void AddTrainingError(int iteration, double error)
-        {
-            TrainingPlot.AppendAsync(this.Dispatcher, new Point(iteration, error));
+            for (; CurrentErrorHistoryIndex < network.ErrorHistory.Count; ++CurrentErrorHistoryIndex)
+            {
+                ValidationPlot.AppendAsync(this.Dispatcher, network.ErrorHistory[CurrentErrorHistoryIndex]);
+            }
         }
 
         private void cbTerminationType_SelectionChanged(object sender, SelectionChangedEventArgs e)

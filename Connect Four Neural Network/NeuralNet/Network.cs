@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
+using System.Windows;
 
 namespace NeuralNet
 {
@@ -17,6 +18,7 @@ namespace NeuralNet
         /// </summary>
         public string Name;
         public double? TrueError = null;
+        public List<Point> ErrorHistory = new List<Point>();
 
 		public List<Neuron> Hiddens { get { return Neurons.Where(n => n.Type == NeuronType.Hidden).ToList(); } }
 		public List<Neuron> Inputs { get { return Neurons.Where(n => n.Type == NeuronType.Input).ToList(); } }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using System.IO;
+using System.Windows;
 
 using MySerializer;
 
@@ -44,25 +45,23 @@ namespace NeuralNet
 
         public void CompleteIteration()
         {
-
             // Check if we need to run through the validation set.
             if (Type == TerminationType.ByValidationSet && CurrentIteration % ValidateCycle == 0)
             {
                 double error = Validate();
+                Network.ErrorHistory.Add(new Point(CurrentIteration, error));
                 if (error < SnapshotError)
                 {
                     Network.TrueError = SnapshotError = error;
                     if (!Directory.Exists(Network.Name))
                         Directory.CreateDirectory(Network.Name);
                     Snapshot = Path.Combine(Network.Name, Network.Name + "_" + error.ToString()) + ".net";
-                    Network.TrainTime.Stop(); // Temporarily stop train time because if it is serialized and still running, when you deserialize your new time span will be the time between serializing and deserializing.
+                    Network.TrainTime.Stop(); // Network needs to be stored/serialized with the timer stopped
                     Serializer.Serialize(Network, Snapshot);
                     Network.TrainTime.Start();
                 }
             }
-
             ++CurrentIteration;
-
         }
 
         /// <summary>
