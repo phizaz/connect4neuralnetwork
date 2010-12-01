@@ -42,7 +42,7 @@ namespace ConnectFour
 
         public void UpdateNetworkPathLabel()
         {
-            lblNetworkPath.Content = Settings.Default.CurrentNetworkPath != null ? System.IO.Path.GetFileNameWithoutExtension(Settings.Default.CurrentNetworkPath) : "Null";
+            lblNetworkPath.Content = Settings.Default.CurrentNetworkPath != null ? System.IO.Path.GetFileNameWithoutExtension(Settings.Default.CurrentNetworkPath).Replace('_','-') : "Null";
             btnClear.Visibility = Settings.Default.CurrentNetworkPath != null ? Visibility.Visible : Visibility.Hidden;
         }
 

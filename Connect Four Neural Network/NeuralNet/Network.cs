@@ -82,13 +82,11 @@ namespace NeuralNet
 
 			for (int i = 0; i < iterations; ++i)
 			{
+                Termination.CompleteIteration();  // Temporarily place in beginning to force gui to show initial error as found when using random weights.  
 				foreach (Example example in examples)
-				{
 					LearnOneExample(example);
-					if (Termination.IsNetworkTrained)
-						return true;
-				}
-				Termination.CompleteIteration();
+                if (Termination.IsNetworkTrained)
+                    return true;
 			}
 
 			return false;
