@@ -59,19 +59,19 @@ namespace ConnectFour
             Checker = Checker.Blue;
             CurrentBoard = new Board();
             if (!startup)
-                GetValidNetwork(); // Assert valid current network.
+                GetValidNetwork(); // Assert valid current network be means of a messagebox.
         }
 
         public Network GetValidNetwork()
         {
-                if (Mode == GameMode.HumanVComputer || Mode == GameMode.ComputerVComputer)
-                    if (Settings.Default.CurrentNetwork == null)
-                    {
-                        MessageBox.Show("Current network path is null or invalid.\r\nLoad a new network in settings.");
-                        Menu.UpdateNetworkPathLabel();
-                        return null;
-                    }
-                return Settings.Default.CurrentNetwork;
+            if (Mode == GameMode.HumanVComputer || Mode == GameMode.ComputerVComputer)
+                if (Settings.Default.CurrentNetwork == null)
+                {
+                    MessageBox.Show("Current network path is null or invalid.\r\nLoad a new network in settings.");
+                    Menu.UpdateNetworkPathLabel();
+                    return null;
+                }
+            return Settings.Default.CurrentNetwork;
         }
 
         private void HumanVHuman_MouseUp(object sender, MouseButtonEventArgs e)
@@ -100,7 +100,7 @@ namespace ConnectFour
 
             Network network = GetValidNetwork();
             if (network != null)
-                Bot = new NeuralNetBot(Checker.Green, network);
+                Bot = new NeuralNetBot(Checker.Green, network, 0);
             else if (Mode != GameMode.HumanVHuman)
                 return;
 
@@ -116,13 +116,13 @@ namespace ConnectFour
                 CurrentBoard.AddChecker(Checker, column);
                 if (CurrentBoard.IsGameOver)
                 {
-                    AddChecker(Checker, column, updateBoard:false);
+                    AddChecker(Checker, column, updateBoard: false);
                     GameOverAnimation();
                     return;
                 }
                 Bot.SelectMove(CurrentBoard, out column2, out score);
                 CurrentBoard.AddChecker(Board.Toggle(Checker), column2);
-                BatchAddCheckers(Checker, new List<int> { column, column2 }, updateBoard:false);
+                BatchAddCheckers(Checker, new List<int> { column, column2 }, updateBoard: false);
             }
             else
             {
@@ -138,10 +138,10 @@ namespace ConnectFour
         {
             if (!CurrentBoard.IsGameOver)
                 return;
-            
+
             Storyboard story = new Storyboard();
-            for (int i=0; i<CurrentBoard.Rows; ++i)
-                for (int j=0; j<CurrentBoard.Columns; ++j)
+            for (int i = 0; i < CurrentBoard.Rows; ++i)
+                for (int j = 0; j < CurrentBoard.Columns; ++j)
                 {
                     if (!CurrentBoard.WinningSequence.Any(t => t.Item1 == i && t.Item2 == j))
                     {
@@ -167,14 +167,14 @@ namespace ConnectFour
 
         public void AddChecker(Checker checker, int column, bool isGameOver = false, bool updateBoard = true)
         {
-            BatchAddCheckers(checker, new List<int> { column }, updateBoard:updateBoard, delay:false, completedBoard:null); 
+            BatchAddCheckers(checker, new List<int> { column }, updateBoard: updateBoard, delay: false, completedBoard: null);
         }
 
-        public void BatchAddCheckers(Checker start, List<int> columnHistory, bool updateBoard = true, bool delay = true, Board completedBoard=null)
+        public void BatchAddCheckers(Checker start, List<int> columnHistory, bool updateBoard = true, bool delay = true, Board completedBoard = null)
         {
             Storyboard story = new Storyboard();
             Checker checker = start;
-            int i=0;
+            int i = 0;
             foreach (int column in columnHistory)
             {
                 Image image = new Image();
@@ -195,7 +195,7 @@ namespace ConnectFour
 
                 ThicknessAnimation animation = new ThicknessAnimation(new Thickness(0, -gridBoard.ActualHeight * 2 * Settings.Default.DropHeightRatio, 0, 0), new Thickness(0, 0, 0, 0), TimeSpan.FromMilliseconds(Settings.Default.DropSpeed));
                 animation.EasingFunction = new BounceEase() { Bounces = 3, Bounciness = 5, EasingMode = System.Windows.Media.Animation.EasingMode.EaseOut };
-                animation.BeginTime = TimeSpan.FromMilliseconds(i * Settings.Default.MoveDelay); 
+                animation.BeginTime = TimeSpan.FromMilliseconds(i * Settings.Default.MoveDelay);
                 Storyboard.SetTarget(animation, image);
                 Storyboard.SetTargetProperty(animation, new PropertyPath(Image.MarginProperty));
                 story.Children.Add(animation);
@@ -248,19 +248,5 @@ namespace ConnectFour
             Log.ForceClose();
             Menu.ForceClose();
         }
-
-
-
-
-
- 
-
-
     }
-
-
-
-
-
-
 }
