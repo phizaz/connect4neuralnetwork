@@ -47,10 +47,7 @@ namespace ConnectFour
                             case "b": checker = Checker.Empty; break;
                         }
                         // Format of linear board data in connect-4.txt is bottom to top, left to right
-                        // Need to convert to our format of: Left to right, top to bottom.
-                        int row = 5 - i % 6;
-                        int column = i / 6;
-                        board.Cells[row, column] = checker;
+                        board.AddChecker(checker, i/6);
                     }
 
                     // In connect-4.txt, it is X's turn to go next, which means

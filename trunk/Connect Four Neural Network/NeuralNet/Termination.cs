@@ -51,12 +51,13 @@ namespace NeuralNet
                 double error = Validate();
                 if (error < SnapshotError)
                 {
-                    SnapshotError = error;
-                    Network.TrueError = error;
+                    Network.TrueError = SnapshotError = error;
                     if (!Directory.Exists(Network.Name))
                         Directory.CreateDirectory(Network.Name);
                     Snapshot = Path.Combine(Network.Name, Network.Name + "_" + error.ToString()) + ".net";
+                    Network.TrainTime.Stop(); // Temporarily stop train time because if it is serialized and still running, when you deserialize your new time span will be the time between serializing and deserializing.
                     Serializer.Serialize(Network, Snapshot);
+                    Network.TrainTime.Start();
                 }
             }
 
