@@ -43,8 +43,8 @@ namespace ConnectFour
             {
                 switch (value)
                 {
-                    case TrainStatus.Create: btnStart.Content = "Start"; EnableAllControls(); break;
-                    case TrainStatus.Running: btnStart.Content = "Pause"; EnableAllControls(false); btnStart.IsEnabled = true; break;
+                    case TrainStatus.Create: btnStart.Content = "Start"; EnableAllControls(); Title = "Neural Network";  break;
+                    case TrainStatus.Running: btnStart.Content = "Pause"; EnableAllControls(false); btnStart.IsEnabled = true; Title = tbName.Text;  break;
                     case TrainStatus.Paused: btnStart.Content = "Resume"; EnableAllControls(); DisableInitialControls(); break;
                     case TrainStatus.Finished: btnStart.Content = "Done"; EnableAllControls(); DisableInitialControls(); break;
                 }

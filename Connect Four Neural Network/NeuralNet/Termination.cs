@@ -72,7 +72,7 @@ namespace NeuralNet
         {
             double meanSquaredError = 0;
             double n = 0;
-            foreach (Example example in ValidationSet.Take(500))
+            foreach (Example example in ValidationSet.Take(6000))
             {
                 Network.PropogateInput(example);
                 for (int i = 0; i < example.Predictions.Count; ++i)
