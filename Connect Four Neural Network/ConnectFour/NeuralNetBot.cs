@@ -21,8 +21,6 @@ namespace ConnectFour
 
 		protected override double EvaluateBoard(Board board)
 		{
-			Debug.Assert(Network.Inputs.Count == board.Rows * board.Columns);
-
 			Example example = MakeExample(board, MyColor);
 			Network.PropogateInput(example);
 			return example.Predictions[0];
