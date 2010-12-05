@@ -13,10 +13,14 @@ namespace ConnectFour
 	public class NeuralNetBot : Bot
 	{
 		public Network Network;
+		public Transform transform;
 
 		public NeuralNetBot(Checker myColor, Network network, double? lambda=null) : base(myColor, lambda)
 		{
 			Network = network;
+			transform = network.Inputs.Count == 42 ? (Transform) new Transform42() :
+				network.Inputs.Count == 78 ? (Transform) new Transform78() :
+				null;
 		}
 
 		protected override double EvaluateBoard(Board board)
@@ -28,7 +32,7 @@ namespace ConnectFour
 
 		public override Example MakeExample(Board board, Checker color)
 		{
-			return Transform.ToNormalizedExample(board, color);
+			return transform.MakeExample(board, color);
 		}
 
 		public override void LearnOneExample(Example example)
