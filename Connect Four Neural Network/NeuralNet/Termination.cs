@@ -60,6 +60,11 @@ namespace NeuralNet
                     Serializer.Serialize(Network, Snapshot);
                     Network.TrainTime.Start();
                 }
+
+		if (Network.TrainingErrorHistory == null)
+			Network.TrainingErrorHistory = new List<Point>();
+		Network.TrainingErrorHistory.Add(
+			new Point(CurrentIteration, Math.Sqrt(Network.TrainingError)));
             }
             ++CurrentIteration;
         }
