@@ -13,6 +13,9 @@ namespace ConnectFour
     /// </summary>
     public abstract class Transform
     {
+	// This controls which transform is being used. To use a different
+	// transform, change the following line as needed and rebuild the
+	// project.
 	static Transform myTransform = new Transform42();
 
         /// <summary>
