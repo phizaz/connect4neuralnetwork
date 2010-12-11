@@ -33,6 +33,7 @@ namespace ConnectFour
         public Network Network;
         public Trainer Trainer;
         public int CurrentErrorHistoryIndex = 0;
+        public int CurrentTrainingErrorIndex = 0;
         Thread Thread;
 
         private TrainStatus _status = TrainStatus.Create;
@@ -104,6 +105,7 @@ namespace ConnectFour
             ValidationPlot.Collection.Clear();
             TrainingPlot.Collection.Clear();
             CurrentErrorHistoryIndex = 0;
+            CurrentTrainingErrorIndex = 0;
             Status = TrainStatus.Create;
             lbError.Content = lbIteration.Content = lbTimeElapsed.Content = "0";
         }
@@ -138,6 +140,10 @@ namespace ConnectFour
             for (; CurrentErrorHistoryIndex < network.ErrorHistory.Count; ++CurrentErrorHistoryIndex)
             {
                 ValidationPlot.AppendAsync(this.Dispatcher, network.ErrorHistory[CurrentErrorHistoryIndex]);
+            }
+            for (; CurrentTrainingErrorIndex < network.TrainingErrorHistory.Count; ++CurrentTrainingErrorIndex)
+            {
+                TrainingPlot.AppendAsync(this.Dispatcher, network.TrainingErrorHistory[CurrentTrainingErrorIndex]);
             }
         }
 
