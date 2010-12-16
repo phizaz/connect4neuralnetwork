@@ -93,7 +93,6 @@
     <Compile Include="Trainer.cs" />
     <Compile Include="TrainingRegimen.cs" />
     <Compile Include="Transform.cs" />
-    <Compile Include="Transform78.cs" />
     <Page Include="Log.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

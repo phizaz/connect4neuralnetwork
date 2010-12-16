@@ -19,8 +19,6 @@ namespace NeuralNet
         public string Name;
         public double? TrueError = null;
         public List<Point> ErrorHistory = new List<Point>();
-	public List<Point> TrainingErrorHistory = new List<Point>();
-	public double TrainingError = 0.0;
 
 		public List<Neuron> Hiddens { get { return Neurons.Where(n => n.Type == NeuronType.Hidden).ToList(); } }
 		public List<Neuron> Inputs { get { return Neurons.Where(n => n.Type == NeuronType.Input).ToList(); } }
@@ -98,13 +96,6 @@ namespace NeuralNet
 
 		public void LearnOneExample(Example example)
 		{
-			if (example.Labels.Count == 1
-				&& example.Predictions.Count == 1)
-			{
-				TrainingError = TrainingError * .999
-					+ Math.Pow(example.Labels[0]-example.Predictions[0], 2.0) * .001;
-			}
-
 			PropogateInput(example);
 			PropogateErrors(example);
 			UpdateWeights();
