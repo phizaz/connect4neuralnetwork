@@ -27,9 +27,9 @@ namespace ConnectFour
         {
             switch (result)
             {
-                case GameResult.Loss: return 0.1;
-                case GameResult.Win: return .9;
+                case GameResult.Loss: return 0;
                 case GameResult.Draw: return 0.5;
+                case GameResult.Win: return 1;
                 default: throw new Exception();
             }
         }
@@ -39,21 +39,43 @@ namespace ConnectFour
             if (checker == Checker.Empty)
                 return ToValue(checker);
             else if (checker == lastPlayerToGo)
-                return Math.Max(ToValue(Checker.Blue), ToValue(Checker.Green));
+                return ToValue(Checker.Green);
             else
-                return Math.Min(ToValue(Checker.Blue), ToValue(Checker.Green));
+                return ToValue(Checker.Blue);  // The player that is about to go will be blue.  
         }
 
 
         /// <summary>
-        /// Converts board to neurel net training example.  Returns example corresopnding to normalized board (current player's checker color corresponds to max value)
+        /// Converts board to neurel net training example.  Returns example corresopnding to normalized board (current player's checker color is blue, last player is green)
         /// </summary>
         /// <param name="lastPlayerToGo">Current Player which corresponds to last checker placed on board.</param>
         public static Example ToNormalizedExample(Board board, Checker lastPlayerToGo)
         {
             Debug.Assert(lastPlayerToGo != Checker.Empty);
-            return new Example(board.Cells.Cast<Checker>().Select(c=>Transform.ToNormalizedValue(c, lastPlayerToGo)).ToList());
+            List<double> boardState = board.Cells.Cast<Checker>().Select(c=>Transform.ToNormalizedValue(c, lastPlayerToGo)).ToList();
+            List<int> features = new List<int>();
+
+            // 42 Input Units - Board State Only
+            // return new Example(boardState);
+            
+            foreach (Checker checker in new List<Checker> { lastPlayerToGo, Board.Toggle(lastPlayerToGo) })
+            {
+                features.AddRange(board.LineOfX(checker));
+                features.AddRange(board.LineOfX(checker, potential: true));
+                features.AddRange(board.NumbersInColumns(checker));
+                features.AddRange(board.NumbersInRows(checker));
+                features.Add(board.NumberOnBoard(checker));
+            }
+            boardState.AddRange(features.Select(e => (double)e));
+
+            // 40 Input Units - Features Only
+            //return new Example(features.Select(e => (double)e).ToList());
+
+            // 82 Input Units - Board State and Features
+            return new Example(boardState);
+
         }
+
   
     }
 }

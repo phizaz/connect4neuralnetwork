@@ -88,17 +88,50 @@ namespace ConnectFour
             Log(string.Format("Allen: {0}({1:f2}) Jason: {2}({3:f2}) Ties {4}({5:f2})   TOTAL: {6}", AllenWon, (double)AllenWon / TotalGames, JasonWon, (double)JasonWon / TotalGames, Ties, (double)Ties / TotalGames, TotalGames));
             Log("");
 
-            // Critic: Takes as input the history/trace and estimates label based on successor board state (Successor meaning next time current player goes -- every two moves!).  Assume all features and predictions values are populated already.
-            for (int i = 0; i < trace.Count - 2; ++i)
+            List<Example> trace1 = new List<Example>(), trace2 = new List<Example>();
+            for (int i = 0; i < trace.Count; ++i)
             {
-                trace[i].Labels = trace[i + 2].Predictions; 
+                if (i % 2 == 0) trace1.Add(trace[i]);
+                else trace2.Add(trace[i]);
+            }
+            double lambda = .7;
+            double alpha = .1;
+            double gamma = .5;
+            UpdateTraceLabels(trace1, lambda, alpha, gamma);
+            UpdateTraceLabels(trace2, lambda, alpha, gamma);
+
+            return trace1.Union(trace2).ToList();
+        }
+
+        // Critic: Takes as input the history/trace and estimates label based on successor board state (Successor meaning next time current player goes -- every two moves!).  Assume all features and predictions values are populated already.
+        private void UpdateTraceLabels(List<Example> trace, double lambda, double alpha, double gamma)
+        {
+            for (int i = 0; i+1 < trace.Count; ++i)
+            {
+                trace[i].Labels = trace[i + 1].Predictions;
             }
 
             if (trace.Count > 0) trace[trace.Count - 1].Labels = trace[trace.Count - 1].Predictions;
-            if (trace.Count > 1) trace[trace.Count - 2].Labels = trace[trace.Count - 2].Predictions;
-
-            return trace;
+            
+            /*
+            for (int i=0; i<trace.Count; ++i)
+            {
+                double sum = 0;
+                double product = 1;
+                for (int j=i; j<trace.Count; ++j)
+                {
+                    double reward = j == trace.Count - 1 ? trace[j].Predictions[0] : 0; // only give a reward if its the end of the game.  
+                    double delta = j < trace.Count - 1 ?  reward + gamma * trace[j+1].Predictions[0] - trace[j].Predictions[0] : reward;
+                    sum += product * delta;
+                    product *= gamma * lambda;
+                }
+                trace[i].Predictions[0] += alpha * sum;
+            }
+            for (int i = 0; i < trace.Count; ++i)
+                trace[i].Labels = trace[i].Predictions;
+            */
         }
+
 
         void Log(string msg)
         {

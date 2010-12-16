@@ -14,15 +14,13 @@ namespace ConnectFour
 	{
 		public Network Network;
 
-		public NeuralNetBot(Checker myColor, Network network, double? lambda=null) : base(myColor, lambda)
+		public NeuralNetBot(Checker myColor, Network network, double? lambda=null, LambdaType? lambdaType=null) : base(myColor, lambda, lambdaType)
 		{
 			Network = network;
 		}
 
 		protected override double EvaluateBoard(Board board)
 		{
-			Debug.Assert(Network.Inputs.Count == board.Rows * board.Columns);
-
 			Example example = MakeExample(board, MyColor);
 			Network.PropogateInput(example);
 			return example.Predictions[0];

@@ -42,7 +42,7 @@ namespace ConnectFour
 
         public void UpdateNetworkPathLabel()
         {
-            lblNetworkPath.Content = Settings.Default.CurrentNetworkPath != null ? System.IO.Path.GetFileNameWithoutExtension(Settings.Default.CurrentNetworkPath).Replace('_','-') : "Null";
+            lblNetworkPath.Content = Settings.Default.CurrentNetworkPath != null ? System.IO.Path.GetFileName(Settings.Default.CurrentNetworkPath).Replace('_','-') : "Null";
             btnClear.Visibility = Settings.Default.CurrentNetworkPath != null ? Visibility.Visible : Visibility.Hidden;
         }
 
@@ -134,8 +134,16 @@ namespace ConnectFour
 
         }
 
-
+        private void lblNetworkPath_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Label label = sender as Label;
+            ToolTip tip = new ToolTip();
+            tip.Content = label.Content;
+            label.ToolTip = tip;
+        }
         #endregion
+
+
 
 
 

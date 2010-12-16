@@ -87,8 +87,11 @@ namespace ConnectFour
         {
             Save();
 
+            if (Thread != null && Thread.IsAlive)
+                Thread.Join(); // Wait for last thread to finish working before starting again.
+
             tbName.Text = "";
-            tbInputs.Text = "42";
+            tbInputs.Text = "82";
             tbHiddens.Text = "100";
             tbOutputs.Text = "1";
             NetworkParameters parameters = new NetworkParameters();
@@ -167,6 +170,7 @@ namespace ConnectFour
                     Network = (Network)Serializer.Deserialize(open.FileName);
                     PopulateControls(Network);
                     Status = TrainStatus.Paused;
+                    Title = Network.Name;
                 }
                 catch { MessageBox.Show("Could not deserialize " + open.FileName.ToString(), "Error"); }
             }
@@ -196,6 +200,7 @@ namespace ConnectFour
                 if (Status == TrainStatus.Running)
                 {
                     Status = TrainStatus.Paused;
+                    Save();
                     return;
                 }
 
