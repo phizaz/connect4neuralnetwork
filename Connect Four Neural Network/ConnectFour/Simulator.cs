@@ -29,13 +29,6 @@ namespace ConnectFour
             Bot allen = new NeuralNetBot(Checker.Blue, network); // <-- you know he will win :)
             Bot jason = new NeuralNetBot(Checker.Green, network);
 
-            // 'learner' is the bot through which we call the learning
-            // methods. Since the learning methods pass through to the
-            // neural network object, and both bots use the same neural
-            // network object, it doesn't really matter which bot we use
-            // for learning.
-            Bot learner = allen;
-
             List<Example> trace = new List<Example>();
 
             Turns = 0;
@@ -48,7 +41,7 @@ namespace ConnectFour
                 Log(String.Format("{0} picks column {1}   (Score: {2:f2})", (current == allen ? "Allen" : "Jason"), column, score));
                 board.AddChecker(current.MyColor, column);
 
-                Example example = learner.MakeExample(board, current.MyColor);
+                Example example = Transform.ToNormalizedExample(board, current.MyColor);
                 example.Predictions.Add(score);
                 trace.Add(example);
 
