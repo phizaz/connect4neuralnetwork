@@ -53,7 +53,6 @@ namespace ConnectFour
                     // In connect-4.txt, it is X's turn to go next, which means
                     // player O has just went. Player O == Green, therefore
                     // we use Checker.Green in the following line.
-
                     Example example = Transform.ToNormalizedExample(board, Checker.Green);
 
                     string result = values[values.Length - 1].ToLower().Trim();

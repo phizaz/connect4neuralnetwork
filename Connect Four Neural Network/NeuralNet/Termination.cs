@@ -33,13 +33,13 @@ namespace NeuralNet
         private Termination() { }
         public static Termination ByIteration(int iterations)
         {
-            Debug.Assert(iterations > 0);
+            if (!(iterations > 0)) throw new Exception("Iterations > 0");
             return new Termination() { Type = TerminationType.ByIteration, TotalIterations = iterations };
         }
 
         public static Termination ByValidationSet(List<Example> validationSet, int validateCycle)
         {
-            Debug.Assert(validateCycle > 0 && validationSet != null && validationSet.Count > 0);
+            if (!(validateCycle > 0 && validationSet != null && validationSet.Count > 0)) throw new Exception("Invalid validation set provided.");
             return new Termination() { Type = TerminationType.ByValidationSet, ValidationSet = validationSet, ValidateCycle = validateCycle};
         }
 

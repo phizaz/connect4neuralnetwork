@@ -20,7 +20,7 @@
                 <Button Content="Load" Height="22" HorizontalAlignment="Left" Margin="78,13,0,0" Name="btnLoadNetwork" VerticalAlignment="Top" Width="45" Click="btnLoadNetwork_Click" />
                 <Label Content="Network" Height="28" HorizontalAlignment="Left" Margin="15,11,0,0" Name="label3" VerticalAlignment="Top" />
                 <Label Content="Path" Height="28" HorizontalAlignment="Left" Margin="36,37,0,0" Name="label4" VerticalAlignment="Top" />
-                <Label Content="Null" Height="28" HorizontalAlignment="Left" Margin="78,37,0,0" Name="lblNetworkPath" VerticalAlignment="Top" FontStyle="Italic" Width="119" />
+                <Label Content="Null" Height="28" HorizontalAlignment="Left" Margin="78,37,0,0" Name="lblNetworkPath" VerticalAlignment="Top" FontStyle="Italic" Width="119" MouseEnter="lblNetworkPath_MouseEnter" />
                 <Button Content="Create" Height="22" HorizontalAlignment="Left" Margin="129,13,0,0" Name="btnCreateNetwork" VerticalAlignment="Top" Width="53" Click="btnCreateNetwork_Click" />
                 <TextBlock Margin="21,44,0,7" Name="btnClear" Text="X" FontSize="10" TextAlignment="Center" ToolTip="Clear path" FontStyle="Italic" HorizontalAlignment="Left" Width="16" MouseUp="btnClearPath_MouseUp">
                 <TextBlock.Style>

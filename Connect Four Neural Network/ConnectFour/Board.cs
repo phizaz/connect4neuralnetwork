@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ConnectFour
 {
@@ -36,7 +37,6 @@ namespace ConnectFour
 		// column should be an integer in [0-6]
         public void AddChecker(Checker checker, int column)
 		{
-			Debug.Assert(column >= 0 && column < Columns);
 			if (IsColumnFull(column))
 			{
                 throw new Exception("Column already filled!");
@@ -174,6 +174,19 @@ namespace ConnectFour
             }
         }
 
+        /// <summary>
+        /// Return the highest checker in the given column.
+        /// </summary>
+        public Checker Peek(int column)
+        {
+            for (int i = 0; i < Rows; ++i)
+            {
+                if (Cells[i, column] != Checker.Empty)
+                    return Cells[i, column];
+            }
+            return Checker.Empty;
+        }
+
         public static Checker Toggle(Checker c)
         {
             return c == Checker.Green ? Checker.Blue : Checker.Green;
@@ -201,5 +214,86 @@ namespace ConnectFour
 			}
 			return str;
 		}
+
+        public List<int> LineOfX(Checker myColor, bool potential = false)
+        {
+            int[] counts = new int[8];
+            int[,] lengths = new int[3,3];
+            int[] sumLengths = new int[4];
+
+            for (int i=0; i<Rows; ++i)
+                for (int j = 0; j < Columns; ++j)
+                    if (potential && Cells[i, j] == Checker.Empty && (i == Rows-1 || Cells[i+1,j] != Checker.Empty) 
+                    || !potential && Cells[i, j] == myColor)
+                    {
+                        if (potential) Cells[i, j] = myColor;
+
+                        for (int di = -1; di < 2; ++di)
+                            for (int dj = -1; dj < 2; ++dj)
+                            {
+                                if (di == 0 && dj == 0)
+                                    continue;
+                                lengths[di+1,dj+1] = CheckSequence(i, j, di, dj); 
+                            }
+                        sumLengths[0] = lengths[0, 0] + lengths[2, 2] - 1; // diag1
+                        sumLengths[1] = lengths[0, 2] + lengths[2, 0] - 1; // diag2
+                        sumLengths[2] = lengths[0, 1] + lengths[2, 1] - 1; // vertical
+                        sumLengths[3] = lengths[1, 0] + lengths[1, 2] - 1; // horizontal
+                        for (int k = 0; k < 4; ++k)
+                        {
+                            ++counts[sumLengths[k]]; 
+                        }
+                        if (potential) Cells[i, j] = Checker.Empty;
+                    }
+            if (!potential)
+            {
+                for (int i = 1; i < counts.Length; ++i)
+                    counts[i] /= i; // Do this because every line of x is counted x times
+            }
+            return new List<int>{ counts[2], counts[3], counts[4] + counts[5] + counts[6] + counts[7]};
+        }
+
+        public List<int> NumbersInColumns(Checker myColor)
+        {
+            List<int> cols = Enumerable.Repeat(0, Columns).ToList();
+            for (int i = 0; i < Rows; ++i)
+                for (int j = 0; j < Columns; ++j)
+                    if (Cells[i, j] == myColor)
+                        ++cols[j];
+            return cols;
+        }
+
+        public List<int> NumbersInRows(Checker myColor)
+        {
+            List<int> rows = Enumerable.Repeat(0, Rows).ToList();
+            for (int i = 0; i < Rows; ++i)
+                for (int j = 0; j < Columns; ++j)
+                    if (Cells[i, j] == myColor)
+                        ++rows[i];
+            return rows;
+        }
+
+        public int NumberOnBoard(Checker myColor)
+        {
+            int num = 0;
+            for (int i = 0; i < Rows; ++i)
+                for (int j = 0; j < Columns; ++j)
+                    if (Cells[i, j] == myColor)
+                        ++num;
+            return num;
+        }
+
+        public override string ToString()
+        {
+            string str = string.Empty;
+            for (int i = 0; i < Rows; ++i)
+            {
+                for (int j = 0; j < Columns; ++j)
+                    str += Cells[i, j] == Checker.Blue ? "x" : Cells[i, j] == Checker.Green ? "o" : " ";
+                str += "\r\n";
+            }
+            return str;
+        }
+
 	}
 }

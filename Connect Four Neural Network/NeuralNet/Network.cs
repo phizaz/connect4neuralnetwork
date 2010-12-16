@@ -207,10 +207,8 @@ namespace NeuralNet
 		
 		public void Assert()
 		{
-			Debug.Assert(LearningRate > 0);
-			Debug.Assert(Momentum >= 0);
-			Debug.Assert(LearningRateDecay >= 0);
-			Debug.Assert(MomentumDecay >= 0);
+			if (LearningRate <= 0) throw new Exception("LearningRate > 0");
+			if (Momentum < 0 || Momentum >= 1) throw new Exception("0 <= Momentum < 1");
 		}
 	}
 
